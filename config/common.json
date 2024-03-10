@@ -1,0 +1,7 @@
+{
+  "db": {
+    "port": "PORT",
+    "user": "USER",
+    "database": "DATABASE"
+  }
+}

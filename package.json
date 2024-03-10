@@ -1,0 +1,32 @@
+{
+  "name": "rmd",
+  "version": "1.0.0",
+  "dependencies": {
+    "date-fns": "^2.29.3",
+    "eslint": "^8.35.0",
+    "eslint-config-google": "^0.14.0",
+    "lodash": "^4.17.21",
+    "node-cache": "^5.1.2",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "pino": "^8.19.0",
+    "pino-pretty": "^4.3.0",
+    "reflect-metadata": "^0.2.1",
+    "telegraf": "^4.12.2",
+    "typeorm": "^0.3.20",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "@rspack/cli": "^0.5.6",
+    "@types/lodash": "^4.14.184",
+    "@types/node": "^18.19.22",
+    "nodemon": "^3.1.0",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "build": "rimraf dist && rspack",
+    "build:watch": "rspack --watch",
+    "dev": "pnpm build:watch | nodemon dist/server.js",
+    "start": "pnpm build && node dist/server.js"
+  }
+}
