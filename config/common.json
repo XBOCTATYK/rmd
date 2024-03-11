@@ -1,7 +1,7 @@
 {
   "db": {
-    "port": "PORT",
-    "user": "USER",
-    "database": "DATABASE"
+    "port": 5432,
+    "user": "rmd_app",
+    "database": "reminder"
   }
 }
