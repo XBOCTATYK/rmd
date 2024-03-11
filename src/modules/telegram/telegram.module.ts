@@ -1,7 +1,14 @@
 import {IAppModule} from '../../types/IAppModule';
+import {TelegramModuleConfig} from './telegram.types';
 
 export class TelegramModule implements IAppModule<any, any> {
-  init(config: any) {
+  private initialized = false;
+  private config = {};
+
+  init(config: TelegramModuleConfig) {
+    this.config = config;
+
+    this.initialized = true;
     console.log('TelegramModule initialized');
     return this;
   }
