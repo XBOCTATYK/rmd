@@ -1,18 +1,20 @@
-import {AppModule} from "../../types/AppModule";
+import {IAppModule} from '../../types/IAppModule';
 
-export class TelegramModule implements AppModule<any, any> {
-    init(config: any) {
-        console.log('TelegramModule initialized')
-        return this
-    }
+export class TelegramModule implements IAppModule<any, any> {
+  init(config: any) {
+    console.log('TelegramModule initialized');
+    return this;
+  }
 
-    start() {
-        console.log('TelegramModule started')
-    }
+  start() {
+    console.log('TelegramModule started');
+  }
 
-    stop() {
-        console.log('TelegramModule stopped')
-    }
+  stop() {
+    console.log('TelegramModule stopped');
+  }
 
-    exports() { return {} };
+  exports() {
+    return {};
+  }
 }

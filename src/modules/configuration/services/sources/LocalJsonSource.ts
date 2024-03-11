@@ -1,13 +1,16 @@
-import { ConfigSource } from '../config.types';
+import {IConfigSource} from '../../config.types';
 import * as fs from 'fs';
 import * as path from 'path';
 
 interface LocalJsonSourceOptions {
   path: string;
-  configName?: string;
+  configName: string;
 }
 
-export class LocalJsonSource implements ConfigSource {
+/**
+ * Reads config from local json file
+ */
+export class LocalJsonSource implements IConfigSource {
   config = {};
   path = './config';
 
@@ -22,7 +25,7 @@ export class LocalJsonSource implements ConfigSource {
 
   private readConfigFile(name: string) {
     return JSON.parse(
-      fs.readFileSync(path.resolve(this.path, `${name}.json`), 'utf-8'),
+        fs.readFileSync(path.resolve(this.path, `${name}.json`), 'utf-8'),
     );
   }
 }
