@@ -4,5 +4,5 @@ import {TelegramModule} from './modules/telegram/telegram.module';
 const tgApp = new TelegramModule();
 
 tgApp
-    .init({})
+    .init({token: 'token'})
     .start();
