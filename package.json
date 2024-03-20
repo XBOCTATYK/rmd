@@ -30,6 +30,7 @@
     "dev": "pnpm build:watch | NODE_ENV=development nodemon dist/server.js",
     "start": "pnpm build && node dist/server.js",
     "lint": "eslint ./src/**/*.ts",
-    "lint:fix": "eslint ./src/**/*.ts --fix"
+    "lint:fix": "eslint ./src/**/*.ts --fix",
+    "migrations": "npx typeorm migration:run"
   }
 }

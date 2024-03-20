@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, TableForeignKey} from 'typeorm';
+import {Column, Entity, ManyToOne} from 'typeorm';
 import {SettingTypeEntity} from './settingType.entity';
 
 @Entity({name: 'user_setting'})
