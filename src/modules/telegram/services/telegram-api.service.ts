@@ -1,6 +1,7 @@
 import {Telegraf} from 'telegraf';
+import {ITelegramApiService} from './service.types';
 
-export class TelegramApiService {
+export class TelegramApiService implements ITelegramApiService {
   private readonly telegraf: Telegraf;
 
   constructor(token: string) {

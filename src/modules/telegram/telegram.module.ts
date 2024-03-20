@@ -1,27 +1,37 @@
 import {IAppModule} from '../../types/IAppModule';
-import {TelegramModuleConfig} from './telegram.types';
+import {ITelegramModuleConfig, ITelegramModuleExports} from './telegram.types';
+import {ILoggerService} from '../common/service/service.types';
+import {ITelegramApiService} from './services/service.types';
+import {TelegramApiService} from './services/telegram-api.service';
 
-export class TelegramModule implements IAppModule<any, any> {
+export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private initialized = false;
-  private config = {};
+  private config?: ITelegramModuleConfig;
+  private telegramApiService?: ITelegramApiService;
 
-  init(config: TelegramModuleConfig) {
+  private loggerService: ILoggerService;
+
+  constructor(loggerService: ILoggerService) {
+    this.loggerService = loggerService;
+  }
+
+  init(config: ITelegramModuleConfig) {
     this.config = config;
+    this.telegramApiService = new TelegramApiService(config.token);
 
     this.initialized = true;
-    console.log('TelegramModule initialized');
+    this.loggerService.info('TelegramModule initialized');
+
     return this;
   }
 
-  start() {
-    console.log('TelegramModule started');
-  }
-
-  stop() {
-    console.log('TelegramModule stopped');
-  }
-
   exports() {
-    return {};
+    if (!this.initialized) {
+      throw new Error('TelegramModule was not initialized');
+    }
+
+    return {
+      telegramApiService: this.telegramApiService!,
+    };
   }
 }
