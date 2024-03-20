@@ -13,6 +13,7 @@
     "require-jsdoc": "off",
     "no-unused-expressions": "error",
     "no-unused-vars": "error",
+    "no-undef": "off",
     "max-len": ["error", { "code": 140, "tabWidth": 4 }],
     "new-cap":  "off"
   }
