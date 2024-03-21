@@ -1,19 +1,12 @@
 import {IConfigService} from '../../types/IConfigService';
 import {ConfigService} from './services/config.service';
-import {IConfigOptions} from './config.types';
+import {IConfigModuleExports, IConfigOptions} from './config.types';
 import {LocalJsonSource} from './services/sources/LocalJsonSource';
+import {IAppModule} from '../../types/IAppModule';
 
-export class ConfigurationModule implements ConfigurationModule {
+export class ConfigurationModule implements IAppModule<IConfigOptions, IConfigModuleExports> {
   configService?: IConfigService;
   initialized = false;
-
-  start() {
-    console.log('ConfigurationModule started');
-  }
-
-  stop() {
-    console.log('ConfigurationModule stopped');
-  }
 
   init(options: IConfigOptions) {
     console.log('ConfigurationModule initialized');
@@ -34,7 +27,7 @@ export class ConfigurationModule implements ConfigurationModule {
     }
 
     return {
-      configService: this.configService,
+      configService: this.configService!,
     };
   }
 }

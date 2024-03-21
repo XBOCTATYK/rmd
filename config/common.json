@@ -2,7 +2,7 @@
   "db": {
     "port": 5432,
     "username": "rmd_app",
-    "database": "reminder",
+    "database": "rmd",
     "host": "localhost",
     "schema": "rmd",
     "logging": true

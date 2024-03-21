@@ -3,6 +3,7 @@ import {ITelegramModuleConfig, ITelegramModuleExports} from './telegram.types';
 import {ILoggerService} from '../common/service/service.types';
 import {ITelegramApiService} from './services/service.types';
 import {TelegramApiService} from './services/telegram-api.service';
+import {IDataProvider} from '../common/common.types';
 
 export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private initialized = false;
@@ -11,7 +12,7 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
 
   private loggerService: ILoggerService;
 
-  constructor(loggerService: ILoggerService) {
+  constructor(loggerService: ILoggerService, dataProvider: IDataProvider) {
     this.loggerService = loggerService;
   }
 
