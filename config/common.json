@@ -6,5 +6,8 @@
     "host": "localhost",
     "schema": "rmd",
     "logging": true
+  },
+  "scheduling": {
+    "scheduler": "TODO: scheduling settings"
   }
 }

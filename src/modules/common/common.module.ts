@@ -3,9 +3,11 @@ import {ICommonModuleConfig, ICommonModuleExports, IDataProvider} from './common
 import {TypeOrmPostgresDataProvider} from './lib/PostgresDataProvider';
 import {PinoLoggerService} from './service/LoggerService';
 import {ILoggerService} from './service/service.types';
+import {IMigrationHolder} from '../../types/IMigrationHolder';
+import {UserEntity} from './model/db/user.entity';
 
 
-export class CommonModule implements IAppModule<ICommonModuleConfig, ICommonModuleExports> {
+export class CommonModule implements IAppModule<ICommonModuleConfig, ICommonModuleExports>, IMigrationHolder {
   private initialized = false;
   private dataProvider?: IDataProvider;
   private loggerService: ILoggerService = new PinoLoggerService();
@@ -30,6 +32,13 @@ export class CommonModule implements IAppModule<ICommonModuleConfig, ICommonModu
 
     return {
       dataProvider: this.dataProvider!,
+    };
+  }
+
+  public migrations() {
+    return {
+      entities: [UserEntity],
+      scripts: [],
     };
   }
 }

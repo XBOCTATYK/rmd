@@ -2,7 +2,7 @@ import {Column, Entity, ManyToOne} from 'typeorm';
 import {SettingTypeEntity} from './settingType.entity';
 
 @Entity({name: 'user_setting'})
-class UserSettingEntity {
+export class UserSettingEntity {
   constructor(
       id: number,
       userId: number,
