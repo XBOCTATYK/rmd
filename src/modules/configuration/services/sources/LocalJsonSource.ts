@@ -1,6 +1,6 @@
 import {IConfigSource} from '../../config.types';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 
 interface LocalJsonSourceOptions {
   path: string;

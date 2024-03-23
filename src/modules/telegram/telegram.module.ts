@@ -11,18 +11,21 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
   private telegramApiService?: ITelegramApiService;
 
   private loggerService: ILoggerService;
+  private dataProvider?: IDataProvider;
 
   constructor(loggerService: ILoggerService, dataProvider: IDataProvider) {
     this.loggerService = loggerService;
+    this.dataProvider = dataProvider;
   }
 
-  init(config: ITelegramModuleConfig) {
+  async init(config: ITelegramModuleConfig) {
     this.config = config;
     this.telegramApiService = new TelegramApiService(config.token);
 
     this.initialized = true;
     this.loggerService.info('TelegramModule initialized');
 
+    await this.dataProvider?.connect();
     return this;
   }
 

@@ -11,7 +11,7 @@ export class ConfigurationModule implements IAppModule<IConfigOptions, IConfigMo
   init(options: IConfigOptions) {
     console.log('ConfigurationModule initialized');
     this.configService = new ConfigService({
-      sources: ['common', options.env].map(
+      sources: ['common', options.env, '.secret'].map(
           (configName) => new LocalJsonSource({configName, path: './config'})
       ),
       global: false,

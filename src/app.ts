@@ -11,12 +11,13 @@ import {IDataSourceConfiguration} from './modules/common/common.types';
   const {configService} = configurationModule.init({env: 'local'}).exports();
 
   const dbConfig = configService.get<IDataSourceConfiguration>('db');
+  console.log(configService.get());
   const commonModule = new CommonModule(loggerService);
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
 
   const tgApp = new TelegramModule(loggerService, dataProvider);
 
-  tgApp.init({token: 'token'});
+  await tgApp.init({token: 'token'});
 })();
 
 
