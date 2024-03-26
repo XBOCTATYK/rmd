@@ -4,6 +4,7 @@ import {SettingTypeEntity} from './model/db/settingType.entity';
 import {UserSettingEntity} from './model/db/userSetting.entity';
 import {ILoggerService} from '../common/service/service.types';
 import {IDataProvider} from '../common/common.types';
+import {TaskScheduleService} from './model/service/TaskScheduleService';
 
 export type ISchedulingModuleConfig = {
     scheduler: any;
@@ -18,6 +19,7 @@ export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Rec
 
   private loggerService: ILoggerService;
   private dataProvider?: IDataProvider;
+  private taskScheduleService?: TaskScheduleService;
 
   constructor(loggerService: ILoggerService, dataProvider: IDataProvider) {
     this.loggerService = loggerService;
@@ -31,7 +33,9 @@ export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Rec
     return this;
   }
   public exports() {
-    return {};
+    return {
+      taskScheduleService: this.taskScheduleService!,
+    };
   }
 
   public migrations() {
