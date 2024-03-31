@@ -3,8 +3,7 @@ import {ITelegramModuleConfig, ITelegramModuleExports} from './telegram.types';
 import {ILoggerService} from '../common/service/service.types';
 import {ITelegramApiService} from './services/service.types';
 import {TelegramApiService} from './services/telegram-api.service';
-import {IDataProvider} from '../common/common.types';
-import {UserStateEntity} from './model/db/userState.entity';
+import {DataSource} from 'typeorm';
 
 export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private initialized = false;
@@ -12,11 +11,11 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
   private telegramApiService?: ITelegramApiService;
 
   private loggerService: ILoggerService;
-  private dataProvider?: IDataProvider;
+  private dataSource?: DataSource;
 
-  constructor(loggerService: ILoggerService, dataProvider: IDataProvider) {
+  constructor(loggerService: ILoggerService, dataSource: DataSource) {
     this.loggerService = loggerService;
-    this.dataProvider = dataProvider;
+    this.dataSource = dataSource;
   }
 
   async init(config: ITelegramModuleConfig) {
@@ -26,7 +25,6 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
     this.initialized = true;
     this.loggerService.info('TelegramModule initialized');
 
-    await this.dataProvider?.connect();
     return this;
   }
 

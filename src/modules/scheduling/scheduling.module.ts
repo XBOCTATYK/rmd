@@ -1,7 +1,7 @@
 import {IAppModule} from '../../types/IAppModule';
 import {ILoggerService} from '../common/service/service.types';
-import {IDataProvider} from '../common/common.types';
 import {TaskScheduleService} from './model/service/TaskScheduleService';
+import {DataSource} from 'typeorm';
 
 export type ISchedulingModuleConfig = {
     scheduler: any;
@@ -15,12 +15,12 @@ export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Rec
   };
 
   private loggerService: ILoggerService;
-  private dataProvider?: IDataProvider;
+  private dataSource?: DataSource;
   private taskScheduleService?: TaskScheduleService;
 
-  constructor(loggerService: ILoggerService, dataProvider: IDataProvider) {
+  constructor(loggerService: ILoggerService, dataSource: DataSource) {
     this.loggerService = loggerService;
-    this.dataProvider = dataProvider;
+    this.dataSource = dataSource;
   }
 
   public init(config: ISchedulingModuleConfig) {

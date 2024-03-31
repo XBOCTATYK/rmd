@@ -6,12 +6,13 @@ module.exports = {
   output: {
     filename: '[name].js',
   },
-  mode: process.env.NODE_ENV === 'local' ? 'development' : 'production',
+  mode: 'development',
   target: 'node',
   resolve: {
     extensions: ['.ts', '.js'],
   },
   module: {
+
     rules: [
       {
         test: /\.ts$/,
