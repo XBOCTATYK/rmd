@@ -4,10 +4,9 @@ import {ILoggerService} from '../common/service/service.types';
 import {ITelegramApiService} from './services/service.types';
 import {TelegramApiService} from './services/telegram-api.service';
 import {IDataProvider} from '../common/common.types';
-import {IMigrationHolder} from '../../types/IMigrationHolder';
 import {UserStateEntity} from './model/db/userState.entity';
 
-export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegramModuleExports>, IMigrationHolder {
+export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private initialized = false;
   private config?: ITelegramModuleConfig;
   private telegramApiService?: ITelegramApiService;
@@ -38,13 +37,6 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
 
     return {
       telegramApiService: this.telegramApiService!,
-    };
-  }
-
-  migrations() {
-    return {
-      entities: [UserStateEntity],
-      scripts: [],
     };
   }
 }

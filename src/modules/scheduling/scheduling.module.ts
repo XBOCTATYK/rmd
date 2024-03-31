@@ -1,7 +1,4 @@
 import {IAppModule} from '../../types/IAppModule';
-import {IMigrationHolder} from '../../types/IMigrationHolder';
-import {SettingTypeEntity} from './model/db/settingType.entity';
-import {UserSettingEntity} from './model/db/userSetting.entity';
 import {ILoggerService} from '../common/service/service.types';
 import {IDataProvider} from '../common/common.types';
 import {TaskScheduleService} from './model/service/TaskScheduleService';
@@ -10,7 +7,7 @@ export type ISchedulingModuleConfig = {
     scheduler: any;
 }
 
-export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Record<string, any>>, IMigrationHolder {
+export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Record<string, any>> {
   public name: string = 'scheduling';
 
   public config: ISchedulingModuleConfig = {
@@ -35,13 +32,6 @@ export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Rec
   public exports() {
     return {
       taskScheduleService: this.taskScheduleService!,
-    };
-  }
-
-  public migrations() {
-    return {
-      entities: [SettingTypeEntity, UserSettingEntity],
-      scripts: [] as Array<(datProvider: IDataProvider) => Promise<void>>,
     };
   }
 }

@@ -2,8 +2,10 @@ import {PinoLoggerService} from './modules/common/service/LoggerService';
 import {ConfigurationModule} from './modules/configuration/configuration.module';
 import {IDataSourceConfiguration} from './modules/common/common.types';
 import {CommonModule} from './modules/common/common.module';
-import {SchedulingModule} from './modules/scheduling/scheduling.module';
-import {TelegramModule} from './modules/telegram/telegram.module';
+import {CommonModuleMigrations} from './modules/common/common.migrations';
+import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
+import {TelegramModuleMigrations} from './modules/telegram/telegram.migrations';
+import {evaluateModuleDataScripts, setEntitiesToDataProvider} from './lib/setEntitiesToDataProvider';
 
 (async function() {
   const loggerService = new PinoLoggerService();
@@ -16,26 +18,15 @@ import {TelegramModule} from './modules/telegram/telegram.module';
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
 
   const modules = [
-    commonModule,
-    new SchedulingModule(loggerService, dataProvider),
-    new TelegramModule(loggerService, dataProvider),
+    new CommonModuleMigrations(),
+    new SchedulingModuleMigrations(),
+    new TelegramModuleMigrations(),
   ];
 
-  const allEntities = [];
-  const allScripts = [];
-  for (const module of modules) {
-    const {entities, scripts} = module.migrations();
-
-    allEntities.push(...entities);
-    allScripts.push(...scripts);
-  }
-
-  const dataSource = dataProvider.getDataSource();
-  dataSource.setOptions({entities: allEntities});
+  setEntitiesToDataProvider(dataProvider, modules);
+  const dataSource = await dataProvider.connect();
   await dataSource.initialize();
   await dataSource.synchronize();
 
-  for (const script of allScripts) {
-    await script(dataProvider);
-  }
+  await evaluateModuleDataScripts(dataProvider, modules);
 })();

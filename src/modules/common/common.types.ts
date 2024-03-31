@@ -8,6 +8,7 @@ export interface IDataSource {
 export interface IDataProvider {
     getDataSource(): DataSource
     connect(): Promise<DataSource>
+    disconnect(): Promise<void>
 }
 
 export interface ICommonModuleConfig {

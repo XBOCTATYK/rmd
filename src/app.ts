@@ -17,9 +17,10 @@ import {ISchedulingModuleConfig, SchedulingModule} from './modules/scheduling/sc
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
 
   const schedulingModule = new SchedulingModule(loggerService, dataProvider);
-  schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling')).exports();
-
   const tgApp = new TelegramModule(loggerService, dataProvider);
+
+
+  schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling')).exports();
 
   await tgApp.init({token: 'token'});
 })();
