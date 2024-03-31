@@ -1,6 +1,6 @@
 import {Column, Entity} from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class UserEntity {
   constructor(
       userId: number,

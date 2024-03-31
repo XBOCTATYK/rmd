@@ -32,6 +32,6 @@
     "start": "pnpm build && node dist/server.js",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
-    "migrations": "npx typeorm migration:run"
+    "migrations": "pnpm build && node dist/migrations.js"
   }
 }

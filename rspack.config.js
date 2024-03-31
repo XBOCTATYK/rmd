@@ -1,7 +1,10 @@
 module.exports = {
-  entry: './src/app.ts',
+  entry: {
+    server: './src/app.ts',
+    migrations: './src/migration-app.ts',
+  },
   output: {
-    filename: 'server.js',
+    filename: '[name].js',
   },
   mode: process.env.NODE_ENV === 'local' ? 'development' : 'production',
   target: 'node',
@@ -14,6 +17,18 @@ module.exports = {
         test: /\.ts$/,
         exclude: [/node_modules/],
         loader: 'builtin:swc-loader',
+        options: {
+          jsc: {
+            parser: {
+              syntax: 'typescript',
+              decorators: true,
+              tsx: true,
+            },
+            transform: {
+              legacyDecorator: true,
+            },
+          },
+        },
       },
     ],
   },

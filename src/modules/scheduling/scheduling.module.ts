@@ -41,7 +41,7 @@ export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Rec
   public migrations() {
     return {
       entities: [SettingTypeEntity, UserSettingEntity],
-      scripts: [],
+      scripts: [] as Array<(datProvider: IDataProvider) => Promise<void>>,
     };
   }
 }
