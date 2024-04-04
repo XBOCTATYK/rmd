@@ -1,15 +1,14 @@
-import {Column, Entity} from 'typeorm';
+import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity({name: 'setting_type'})
 export class SettingTypeEntity {
-  constructor(id: number, name: string, description: string) {
-    this.id = id;
+  constructor(name: string, description: string) {
     this.name = name;
     this.description = description;
   }
 
-    @Column({name: 'setting_type_id', type: 'smallint', primary: true, unique: true})
-      id: number;
+    @PrimaryGeneratedColumn('increment', {name: 'setting_type_id', type: 'smallint', primaryKeyConstraintName: 'setting_type_id_pk'})
+      id?: number;
 
     @Column({name: 'setting_type_name', type: 'varchar', length: 31})
       name: string;

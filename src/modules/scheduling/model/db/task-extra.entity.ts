@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {TaskExtraTypeEntity} from './taskExtraType.entity';
 
 @Entity()
@@ -9,6 +9,7 @@ export class TaskExtraEntity {
     @Column({name: 'task_id', type: 'bigint'})
     public taskId: number;
 
+    @ManyToOne(() => TaskExtraTypeEntity, (settingType) => settingType.id)
     @Column({name: 'task_extra_type'})
     public type: TaskExtraTypeEntity;
 

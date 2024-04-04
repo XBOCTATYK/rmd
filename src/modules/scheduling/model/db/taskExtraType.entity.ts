@@ -1,8 +1,8 @@
-import {Column, Entity} from 'typeorm';
+import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity()
 export class TaskExtraTypeEntity {
-  @Column({name: 'task_extra_type', type: 'smallint'})
+  @PrimaryGeneratedColumn('increment', {name: 'task_extra_type', type: 'smallint', primaryKeyConstraintName: 'task_extra_type_id_pk'})
   public id?: number;
 
   @Column({name: 'task_extra_type_name', type: 'varchar'})
