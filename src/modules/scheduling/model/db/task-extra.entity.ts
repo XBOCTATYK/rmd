@@ -3,8 +3,7 @@ import {TaskExtraTypeEntity} from './taskExtraType.entity';
 
 @Entity()
 export class TaskExtraEntity {
-    @PrimaryGeneratedColumn()
-    @Column({name: 'task_extra_id', type: 'bigint'})
+    @PrimaryGeneratedColumn('identity', {name: 'task_extra_id', type: 'bigint', primaryKeyConstraintName: 'task_extra_id_pk'})
   public id?: number;
 
     @Column({name: 'task_id', type: 'bigint'})
