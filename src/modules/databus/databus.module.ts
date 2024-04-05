@@ -10,17 +10,20 @@ export class DataBusModule implements IAppModule<any, any> {
   private readonly loggerService: ILoggerService;
   private readonly dataBusConnector: IDataBusConnector;
   private readonly dataBusFactory: DataBusFactoryService;
+  private config = {};
+
   constructor(dataProvider: IDataProvider, loggerService: ILoggerService) {
     this.dataProvider = dataProvider;
     this.loggerService = loggerService;
-    this.dataBusConnector = new EventEmitterDataBusConnector();
+    this.dataBusConnector = new EventEmitterDataBusConnector({});
     this.dataBusFactory = new DataBusFactoryService(this.dataBusConnector, this.loggerService);
   }
   exports(): { dataBusFactory: DataBusFactoryService } {
     return {dataBusFactory: this.dataBusFactory};
   }
 
-  init(config: any): this | Promise<this> {
+  init(config: Record<string, any>): this | Promise<this> {
+    this.config = config;
     return this;
   }
 }

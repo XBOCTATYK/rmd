@@ -27,8 +27,8 @@ const moduleMigrationsList = [
   const commonModule = new CommonModule(loggerService);
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
   setEntitiesToDataProvider(dataProvider, moduleMigrationsList);
-  const dataSource = await dataProvider.connect();
 
+  await dataProvider.connect();
   const dataBusModule = new DataBusModule(dataProvider, loggerService);
   await dataBusModule.init({});
   const {dataBusFactory} = dataBusModule.exports();

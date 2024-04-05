@@ -2,7 +2,6 @@ import {IAppModule} from '../../types/IAppModule';
 import {ILoggerService} from '../common/service/service.types';
 import {TaskScheduleService} from './model/service/TaskScheduleService';
 import {DataBusService} from '../databus/services/databus.service';
-import {wait} from '../../lib/delay';
 
 export type ISchedulingModuleConfig = {
     scheduler: any;
