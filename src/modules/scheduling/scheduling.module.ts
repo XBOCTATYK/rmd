@@ -1,7 +1,8 @@
 import {IAppModule} from '../../types/IAppModule';
 import {ILoggerService} from '../common/service/service.types';
 import {TaskScheduleService} from './model/service/TaskScheduleService';
-import {DataSource} from 'typeorm';
+import {DataBusService} from '../databus/services/databus.service';
+import {wait} from '../../lib/delay';
 
 export type ISchedulingModuleConfig = {
     scheduler: any;
@@ -15,12 +16,12 @@ export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Rec
   };
 
   private loggerService: ILoggerService;
-  private dataSource?: DataSource;
   private taskScheduleService?: TaskScheduleService;
+  private dataBusService: DataBusService;
 
-  constructor(loggerService: ILoggerService, dataSource: DataSource) {
+  constructor(loggerService: ILoggerService, dataBusService: DataBusService) {
     this.loggerService = loggerService;
-    this.dataSource = dataSource;
+    this.dataBusService = dataBusService;
   }
 
   public init(config: ISchedulingModuleConfig) {

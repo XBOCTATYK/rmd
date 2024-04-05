@@ -9,6 +9,7 @@ import {setEntitiesToDataProvider} from './lib/setEntitiesToDataProvider';
 import {TelegramModuleMigrations} from './modules/telegram/telegram.migrations';
 import {CommonModuleMigrations} from './modules/common/common.migrations';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
+import {DataBusModule} from './modules/databus/databus.module';
 
 const moduleMigrationsList = [
   new TelegramModuleMigrations(),
@@ -28,10 +29,16 @@ const moduleMigrationsList = [
   setEntitiesToDataProvider(dataProvider, moduleMigrationsList);
   const dataSource = await dataProvider.connect();
 
-  const schedulingModule = new SchedulingModule(loggerService, dataSource);
+  const dataBusModule = new DataBusModule(dataProvider, loggerService);
+  await dataBusModule.init({});
+  const {dataBusFactory} = dataBusModule.exports();
+
+  const taskTopic = dataBusFactory.getDataBusService('task');
+
+  const schedulingModule = new SchedulingModule(loggerService, taskTopic);
   schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling')).exports();
 
-  const tgApp = new TelegramModule(loggerService, dataSource);
+  const tgApp = new TelegramModule(loggerService, taskTopic);
   await tgApp.init({token: 'token'});
 })();
 

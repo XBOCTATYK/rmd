@@ -3,7 +3,8 @@ import {ITelegramModuleConfig, ITelegramModuleExports} from './telegram.types';
 import {ILoggerService} from '../common/service/service.types';
 import {ITelegramApiService} from './services/service.types';
 import {TelegramApiService} from './services/telegram-api.service';
-import {DataSource} from 'typeorm';
+import {DataBusService} from '../databus/services/databus.service';
+import {DataBusEvent} from '../databus/databus.types';
 
 export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private initialized = false;
@@ -11,11 +12,11 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
   private telegramApiService?: ITelegramApiService;
 
   private loggerService: ILoggerService;
-  private dataSource?: DataSource;
+  private dataBusService: DataBusService;
 
-  constructor(loggerService: ILoggerService, dataSource: DataSource) {
+  constructor(loggerService: ILoggerService, dataBusService: DataBusService) {
     this.loggerService = loggerService;
-    this.dataSource = dataSource;
+    this.dataBusService = dataBusService;
   }
 
   async init(config: ITelegramModuleConfig) {
@@ -24,6 +25,9 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
 
     this.initialized = true;
     this.loggerService.info('TelegramModule initialized');
+    await this.dataBusService.addListener('telegram', (event: DataBusEvent<{ message: string }>) => {
+      console.log(event.data.message);
+    });
 
     return this;
   }
