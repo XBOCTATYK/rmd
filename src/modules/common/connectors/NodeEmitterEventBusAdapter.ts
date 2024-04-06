@@ -1,15 +1,14 @@
 import EventEmitter from 'events';
 import merge from 'lodash/merge';
 import {
-  DataBusEvent,
   IEventBusAdapter,
   IDataBusAdapterConfig,
-  IListener,
+  IListener, DataBusEvent,
 } from '../../databus/databus.types';
 
 export class NodeEmitterEventBusAdapter implements IEventBusAdapter {
   private emitter: EventEmitter;
-  private listeners: IListener<unknown>[] = [];
+  private listeners: IListener<DataBusEvent<unknown>>[] = [];
   private initialConfig = {
     eventName: 'message',
     maxListeners: 4,
