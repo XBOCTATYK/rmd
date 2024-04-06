@@ -7,3 +7,7 @@ export interface ITelegramModuleConfig {
 export interface ITelegramModuleExports {
     telegramApiService: ITelegramApiService
 }
+
+export type TelegramModuleDataBusEvent = {
+
+}

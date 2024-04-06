@@ -10,6 +10,7 @@ import {TelegramModuleMigrations} from './modules/telegram/telegram.migrations';
 import {CommonModuleMigrations} from './modules/common/common.migrations';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
 import {DataBusModule} from './modules/databus/databus.module';
+import {SchedulingEvents} from './modules/common/databus/schedulingMessaging.types';
 
 const moduleMigrationsList = [
   new TelegramModuleMigrations(),
@@ -33,7 +34,7 @@ const moduleMigrationsList = [
   await dataBusModule.init({});
   const {dataBusFactory} = dataBusModule.exports();
 
-  const taskTopic = dataBusFactory.getDataBusService('task');
+  const taskTopic = dataBusFactory.getDataBusService<SchedulingEvents>('scheduling-events');
 
   const schedulingModule = new SchedulingModule(loggerService, taskTopic);
   schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling')).exports();

@@ -1,15 +1,15 @@
-import {DataBusEvent, IDataBusAdapter} from '../databus.types';
+import {DataBusEvent, IEventBusAdapter} from '../databus.types';
 import {ILoggerService} from '../../common/service/service.types';
 import {waitUntil} from '../../../lib/wait';
 
 
-export class DataBusService {
+export class EventBusService<T extends DataBusEvent<unknown>> {
   private readonly topic: string;
-  private dataBusConnector: IDataBusAdapter;
+  private dataBusConnector: IEventBusAdapter;
   private logger: ILoggerService;
   private connected = false;
 
-  constructor(dataBusConnector: IDataBusAdapter, logger: ILoggerService, topic: string) {
+  constructor(dataBusConnector: IEventBusAdapter, logger: ILoggerService, topic: string) {
     this.topic = topic;
     this.dataBusConnector = dataBusConnector;
     this.logger = logger;
@@ -17,13 +17,13 @@ export class DataBusService {
     this.connect().then(() => this.connected = true);
   }
 
-  async fireEvent<T extends Record<string, any>>(data: DataBusEvent<T>) {
+  async fireEvent(data: T) {
     await waitUntil(() => this.connected);
     this.logger.info('firedEvent', data);
     await this.dataBusConnector.addEvent(this.topic, data);
   }
 
-  async addListener(name: string, fn: (data: Record<string, any>) => unknown) {
+  async addListener(name: string, fn: (event: T) => unknown) {
     await waitUntil(() => this.connected);
     await this.dataBusConnector.addListener(name, fn);
   }

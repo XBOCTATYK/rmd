@@ -2,14 +2,14 @@ import EventEmitter from 'events';
 import merge from 'lodash/merge';
 import {
   DataBusEvent,
-  IDataBusAdapter,
+  IEventBusAdapter,
   IDataBusAdapterConfig,
   IListener,
 } from '../../databus/databus.types';
 
-export class EventEmitterDataBusAdapter implements IDataBusAdapter {
+export class NodeEmitterEventBusAdapter implements IEventBusAdapter {
   private emitter: EventEmitter;
-  private listeners: IListener[] = [];
+  private listeners: IListener<unknown>[] = [];
   private initialConfig = {
     eventName: 'message',
     maxListeners: 4,
@@ -23,11 +23,11 @@ export class EventEmitterDataBusAdapter implements IDataBusAdapter {
     this.emitter.setMaxListeners(this.config.maxListeners);
   }
 
-  async addEvent<T extends Record<string, any>>(topic: string, event: DataBusEvent<T>) {
+  async addEvent(topic: string, event: unknown) {
     this.emitter.emit(this.config.eventName, event);
   }
 
-  async addListener(name: string, fn: (data: DataBusEvent<Record<string, any>>) => unknown) {
+  async addListener(name: string, fn: (data: unknown) => unknown) {
     this.listeners.push({name, fn});
     this.emitter.on(this.config.eventName, fn);
   }

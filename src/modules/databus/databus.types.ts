@@ -1,18 +1,19 @@
 export type DataBusEvent<T> = {
     type: string,
-    data: T
+    data: T,
+    metadata?: Record<string, string>
 }
 
-export interface IDataBusAdapter {
-    addEvent: (topic: string, event: DataBusEvent<Record<string, any>>) => Promise<void>
-    addListener: (name: string, fn: (data: DataBusEvent<Record<string, any>>) => unknown) => Promise<void>
+export interface IEventBusAdapter {
+    addEvent: (topic: string, event: unknown) => Promise<void>
+    addListener: (name: string, fn: (event: any) => unknown) => Promise<void>
     removeListener: (name: string) => Promise<void>
     addErrorHandler: (fn: (e: Error) => unknown) => Promise<void>
 }
 
-export interface IListener {
+export interface IListener<T extends DataBusEvent<unknown> > {
     name: string;
-    fn: (data: DataBusEvent<Record<string, any>>) => unknown
+    fn: (event: T) => unknown
 }
 
 export interface IDataBusAdapterConfig {

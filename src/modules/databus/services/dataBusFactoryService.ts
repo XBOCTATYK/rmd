@@ -1,17 +1,17 @@
 import {ILoggerService} from '../../common/service/service.types';
-import {DataBusService} from './databus.service';
-import {IDataBusAdapter} from '../databus.types';
+import {EventBusService} from './eventBusService';
+import {DataBusEvent, IEventBusAdapter} from '../databus.types';
 
 export class DataBusFactoryService {
   private readonly loggerService: ILoggerService;
-  private readonly dataConnector: IDataBusAdapter;
+  private readonly dataConnector: IEventBusAdapter;
 
-  constructor(dataBusConnector: IDataBusAdapter, loggerService: ILoggerService) {
+  constructor(dataBusConnector: IEventBusAdapter, loggerService: ILoggerService) {
     this.dataConnector = dataBusConnector;
     this.loggerService = loggerService;
   }
 
-  getDataBusService(topic: string) {
-    return new DataBusService(this.dataConnector, this.loggerService, topic);
+  getDataBusService<T extends DataBusEvent<unknown>>(topic: string) {
+    return new EventBusService<T>(this.dataConnector, this.loggerService, topic);
   }
 }

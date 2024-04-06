@@ -3,8 +3,8 @@ import {ITelegramModuleConfig, ITelegramModuleExports} from './telegram.types';
 import {ILoggerService} from '../common/service/service.types';
 import {ITelegramApiService} from './services/service.types';
 import {TelegramApiService} from './services/telegram-api.service';
-import {DataBusService} from '../databus/services/databus.service';
-import {DataBusEvent} from '../databus/databus.types';
+import {EventBusService} from '../databus/services/eventBusService';
+import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 
 export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private initialized = false;
@@ -12,9 +12,9 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
   private telegramApiService?: ITelegramApiService;
 
   private loggerService: ILoggerService;
-  private dataBusService: DataBusService;
+  private dataBusService: EventBusService<SchedulingEvents>;
 
-  constructor(loggerService: ILoggerService, dataBusService: DataBusService) {
+  constructor(loggerService: ILoggerService, dataBusService: EventBusService<SchedulingEvents>) {
     this.loggerService = loggerService;
     this.dataBusService = dataBusService;
   }
@@ -25,8 +25,10 @@ export class TelegramModule implements IAppModule<ITelegramModuleConfig, ITelegr
 
     this.initialized = true;
     this.loggerService.info('TelegramModule initialized');
-    await this.dataBusService.addListener('telegram', (event: DataBusEvent<{ message: string }>) => {
-      console.log(event.data.message);
+    await this.dataBusService.addListener('telegram', (event) => {
+      if (event.type === 'hello') {
+        console.log(event.data.message);
+      }
     });
 
     return this;
