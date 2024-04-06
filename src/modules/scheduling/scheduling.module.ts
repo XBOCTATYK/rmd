@@ -1,37 +1,26 @@
-import {IAppModule} from '../../types/IAppModule';
 import {ILoggerService} from '../common/service/service.types';
 import {TaskScheduleService} from './model/service/TaskScheduleService';
 import {EventBusService} from '../databus/services/eventBusService';
 import {wait} from '../../lib/wait';
-import {SchedulingModuleDataBusEvent} from './scheduling.types';
 import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
+import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
+import {ISchedulingModuleConfig} from './scheduling.types';
 
-export type ISchedulingModuleConfig = {
-    scheduler: any;
-}
-
-export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Record<string, any>> {
-  public name: string = 'scheduling';
-
-  public config: ISchedulingModuleConfig = {
-    scheduler: null,
-  };
-
+export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, Record<string, any>> {
   private loggerService: ILoggerService;
   private taskScheduleService?: TaskScheduleService;
   private dataBusService: EventBusService<SchedulingEvents>;
 
   constructor(loggerService: ILoggerService, eventBusService: EventBusService<SchedulingEvents>) {
+    super('scheduling');
     this.loggerService = loggerService;
     this.dataBusService = eventBusService;
   }
 
-  public init(config: ISchedulingModuleConfig) {
-    this.config = config;
-
+  public async initModule(config: ISchedulingModuleConfig) {
     this.loggerService.info('SchedulingModule initialized');
 
-    this.tryStart();
+    await this.tryStart();
     return this;
   }
 
@@ -39,9 +28,9 @@ export class SchedulingModule implements IAppModule<ISchedulingModuleConfig, Rec
     await wait(2000);
     await this.dataBusService.fireEvent({type: 'hello', data: {message: 'hello'}});
     await wait(2000);
-    this.dataBusService.fireEvent({type: 'hello', data: {message: 'hello2'}});
+    await this.dataBusService.fireEvent({type: 'hello', data: {message: 'hello2'}});
   }
-  public exports() {
+  public buildExports() {
     return {
       taskScheduleService: this.taskScheduleService!,
     };

@@ -4,13 +4,15 @@ import {CommonModule} from './modules/common/common.module';
 import {PinoLoggerService} from './modules/common/service/LoggerService';
 import {ConfigurationModule} from './modules/configuration/configuration.module';
 import {IDataSourceConfiguration} from './modules/common/common.types';
-import {ISchedulingModuleConfig, SchedulingModule} from './modules/scheduling/scheduling.module';
+import {SchedulingModule} from './modules/scheduling/scheduling.module';
 import {setEntitiesToDataProvider} from './lib/setEntitiesToDataProvider';
 import {TelegramModuleMigrations} from './modules/telegram/telegram.migrations';
 import {CommonModuleMigrations} from './modules/common/common.migrations';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
 import {DataBusModule} from './modules/databus/databus.module';
 import {SchedulingEvents} from './modules/common/databus/schedulingMessaging.types';
+import {ITelegramModuleConfig} from './modules/telegram/telegram.types';
+import {ISchedulingModuleConfig} from './modules/scheduling/scheduling.types';
 
 const moduleMigrationsList = [
   new TelegramModuleMigrations(),
@@ -37,10 +39,10 @@ const moduleMigrationsList = [
   const taskTopic = dataBusFactory.getDataBusService<SchedulingEvents>('scheduling-events');
 
   const schedulingModule = new SchedulingModule(loggerService, taskTopic);
-  schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling')).exports();
+  schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling'));
 
   const tgApp = new TelegramModule(loggerService, taskTopic);
-  await tgApp.init({token: 'token'});
+  await tgApp.init(configService.get<ITelegramModuleConfig>('bot'));
 })();
 
 
