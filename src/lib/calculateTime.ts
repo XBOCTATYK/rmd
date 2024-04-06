@@ -59,11 +59,9 @@ function notifyTimesInNearDayWithWorkingHours(notifyTimes: Date[], from: Date, t
     value = checkInWorkRange(from, to, date); return value;
   }, false);
 
-  const offsets = !allNotifiesInRange ?
+  return !allNotifiesInRange ?
         notifiesInNearestDay.map( (date) => getAvailableTime(from, to, date)) :
         notifiesInNearestDay;
-
-  return offsets;
 }
 
 export function getNextNotifyTime(
