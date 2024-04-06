@@ -31,6 +31,6 @@ export class DateMapper implements IMessageMapper {
   }
 
   validate(message: string): boolean {
-    return true;
+    return !!message;
   }
 }
