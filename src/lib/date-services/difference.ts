@@ -121,8 +121,8 @@ export class Difference implements IDifference {
   }
 
   intersection(diffObj: Difference) {
-    let dateTo = null;
-    let dateFrom = null;
+    let dateTo;
+    let dateFrom;
 
     if (diffObj.dateFrom() > this.dateFrom()) {
       dateFrom = diffObj.dateFrom();
