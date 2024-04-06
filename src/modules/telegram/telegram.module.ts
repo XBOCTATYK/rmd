@@ -27,6 +27,16 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
       }
     });
 
+    this.telegramApiService.addHandler({
+      type: 'command',
+      name: 'start',
+      fn: async (ctx) => {
+        await ctx.reply('Hello!');
+      },
+    });
+
+    await this.telegramApiService.start();
+
     return this;
   }
 
