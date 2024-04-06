@@ -8,3 +8,8 @@ export interface ITelegramModuleConfig {
 export interface ITelegramModuleExports {
     telegramApiService: ITelegramApiService
 }
+
+export interface IMessageMapper {
+    validate: (message: string) => boolean
+    map: (message: string) => string
+}
