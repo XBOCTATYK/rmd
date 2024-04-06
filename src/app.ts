@@ -13,6 +13,8 @@ import {DataBusModule} from './modules/databus/databus.module';
 import {SchedulingEvents} from './modules/common/databus/schedulingMessaging.types';
 import {ITelegramModuleConfig} from './modules/telegram/telegram.types';
 import {ISchedulingModuleConfig} from './modules/scheduling/scheduling.types';
+import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitterEventBusAdapter';
+import {AuthModule} from './modules/auth/auth.module';
 
 const moduleMigrationsList = [
   new TelegramModuleMigrations(),
@@ -31,8 +33,7 @@ const moduleMigrationsList = [
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
   setEntitiesToDataProvider(dataProvider, moduleMigrationsList);
 
-  await dataProvider.connect();
-  const dataBusModule = new DataBusModule(dataProvider, loggerService);
+  const dataBusModule = new DataBusModule(dataProvider, loggerService, new NodeEmitterEventBusAdapter());
   await dataBusModule.init({});
   const {dataBusFactory} = dataBusModule.exports();
 
@@ -40,6 +41,9 @@ const moduleMigrationsList = [
 
   const schedulingModule = new SchedulingModule(loggerService, taskTopic);
   schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling'));
+
+  const authModule = new AuthModule(dataProvider, loggerService);
+  await authModule.init(configService.get('auth'));
 
   const tgApp = new TelegramModule(loggerService, taskTopic);
   await tgApp.init(configService.get<ITelegramModuleConfig>('bot'));

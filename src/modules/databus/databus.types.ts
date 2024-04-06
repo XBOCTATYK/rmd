@@ -1,3 +1,11 @@
+import {DataBusFactoryService} from './services/dataBusFactoryService';
+
+export interface IDataBusModuleConfig {}
+
+export interface IDataBusModuleExports {
+    dataBusFactory: DataBusFactoryService
+}
+
 export type DataBusEvent<T> = {
     type: string,
     data: T,

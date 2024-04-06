@@ -1,29 +1,31 @@
-import {IAppModule} from '../../types/IAppModule';
 import {IDataProvider} from '../common/common.types';
 import {ILoggerService} from '../common/service/service.types';
-import {IEventBusAdapter} from './databus.types';
-import {NodeEmitterEventBusAdapter} from '../common/connectors/NodeEmitterEventBusAdapter';
+import {IDataBusModuleConfig, IDataBusModuleExports, IEventBusAdapter} from './databus.types';
 import {DataBusFactoryService} from './services/dataBusFactoryService';
+import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 
-export class DataBusModule implements IAppModule<any, any> {
+export class DataBusModule extends AbstractAuthModule<IDataBusModuleConfig, IDataBusModuleExports> {
   private dataProvider: IDataProvider;
   private readonly loggerService: ILoggerService;
   private readonly dataBusConnector: IEventBusAdapter;
-  private readonly dataBusFactory: DataBusFactoryService;
-  private config = {};
+  private dataBusFactory?: DataBusFactoryService;
 
-  constructor(dataProvider: IDataProvider, loggerService: ILoggerService) {
+  constructor(dataProvider: IDataProvider, loggerService: ILoggerService, dataBusConnector: IEventBusAdapter) {
+    super('databus');
+
     this.dataProvider = dataProvider;
     this.loggerService = loggerService;
-    this.dataBusConnector = new NodeEmitterEventBusAdapter({});
-    this.dataBusFactory = new DataBusFactoryService(this.dataBusConnector, this.loggerService);
+    this.dataBusConnector = dataBusConnector;
   }
-  exports(): { dataBusFactory: DataBusFactoryService } {
-    return {dataBusFactory: this.dataBusFactory};
+  protected buildExports() {
+    return {
+      dataBusFactory: this.dataBusFactory!,
+    };
   }
 
-  init(config: Record<string, any>): this | Promise<this> {
-    this.config = config;
+  protected async initModule(config: Record<string, any>) {
+    this.dataBusFactory = new DataBusFactoryService(this.dataBusConnector, this.loggerService);
+
     return this;
   }
 }

@@ -1,10 +1,6 @@
 import EventEmitter from 'events';
 import merge from 'lodash/merge';
-import {
-  IEventBusAdapter,
-  IDataBusAdapterConfig,
-  IListener, DataBusEvent,
-} from '../../databus/databus.types';
+import {DataBusEvent, IDataBusAdapterConfig, IEventBusAdapter, IListener} from '../../databus/databus.types';
 
 export class NodeEmitterEventBusAdapter implements IEventBusAdapter {
   private emitter: EventEmitter;
@@ -15,7 +11,7 @@ export class NodeEmitterEventBusAdapter implements IEventBusAdapter {
   };
   private config: IDataBusAdapterConfig;
 
-  constructor(config: Partial<IDataBusAdapterConfig>) {
+  constructor(config: Partial<IDataBusAdapterConfig> = {}) {
     this.emitter = new EventEmitter();
     this.config = merge(this.initialConfig, config);
 
