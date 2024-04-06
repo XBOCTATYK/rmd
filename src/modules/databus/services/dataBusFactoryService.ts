@@ -1,12 +1,12 @@
 import {ILoggerService} from '../../common/service/service.types';
 import {DataBusService} from './databus.service';
-import {IDataBusConnector} from '../databus.types';
+import {IDataBusAdapter} from '../databus.types';
 
 export class DataBusFactoryService {
   private readonly loggerService: ILoggerService;
-  private readonly dataConnector: IDataBusConnector;
+  private readonly dataConnector: IDataBusAdapter;
 
-  constructor(dataBusConnector: IDataBusConnector, loggerService: ILoggerService) {
+  constructor(dataBusConnector: IDataBusAdapter, loggerService: ILoggerService) {
     this.dataConnector = dataBusConnector;
     this.loggerService = loggerService;
   }
