@@ -1,6 +1,7 @@
 import {DataBusEvent, IEventBusAdapter} from '../databus.types';
 import {ILoggerService} from '../../common/service/service.types';
 import {waitUntil} from '../../../lib/wait';
+import {randomUUID} from 'crypto';
 
 
 export class EventBusService<T extends DataBusEvent<unknown>> {
@@ -19,8 +20,15 @@ export class EventBusService<T extends DataBusEvent<unknown>> {
 
   async fireEvent(data: T) {
     await waitUntil(() => this.connected);
-    this.logger.info('firedEvent', data);
-    await this.dataBusConnector.addEvent(this.topic, data);
+
+    const metadata = {
+      ...data.metadata,
+      uid: randomUUID(),
+      timestamp: Date.now(),
+    };
+
+    this.logger.info('firedEvent %o', {topic: this.topic, type: data.type, metadata});
+    await this.dataBusConnector.addEvent(this.topic, {...data, metadata});
   }
 
   async addListener(name: string, fn: (event: T) => unknown) {
