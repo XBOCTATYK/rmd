@@ -1,5 +1,5 @@
 import {ILoggerService} from '../common/service/service.types';
-import {TaskScheduleService} from './model/service/TaskScheduleService';
+import {TaskScheduleService} from './services/TaskScheduleService';
 import {EventBusService} from '../databus/services/eventBusService';
 import {wait} from '../../lib/wait';
 import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';

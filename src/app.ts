@@ -44,8 +44,9 @@ const moduleMigrationsList = [
 
   const authModule = new AuthModule(dataProvider, loggerService);
   await authModule.init(configService.get('auth'));
+  const {userAuthService} = authModule.exports();
 
-  const tgApp = new TelegramModule(loggerService, taskTopic);
+  const tgApp = new TelegramModule(loggerService, taskTopic, userAuthService);
   await tgApp.init(configService.get<ITelegramModuleConfig>('bot'));
 })();
 

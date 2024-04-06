@@ -5,16 +5,26 @@ import {TelegramApiService} from './services/telegram-api.service';
 import {EventBusService} from '../databus/services/eventBusService';
 import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
+import {IAuthUserService} from '../common/common.types';
+import {TaskCreationHandler} from './handlers/TaskCreationHandler';
+import {HelloHandler} from './handlers/HelloHandler';
 
 export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private telegramApiService?: ITelegramApiService;
   private loggerService: ILoggerService;
   private dataBusService: EventBusService<SchedulingEvents>;
+  private readonly authService: IAuthUserService;
 
-  constructor(loggerService: ILoggerService, dataBusService: EventBusService<SchedulingEvents>) {
+  constructor(
+      loggerService: ILoggerService,
+      dataBusService: EventBusService<SchedulingEvents>,
+      authService: IAuthUserService,
+  ) {
     super('telegram');
+
     this.loggerService = loggerService;
     this.dataBusService = dataBusService;
+    this.authService = authService;
   }
 
   protected async initModule(config: ITelegramModuleConfig) {
@@ -27,13 +37,14 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
       }
     });
 
-    this.telegramApiService.addHandler({
-      type: 'command',
-      name: 'start',
-      fn: async (ctx) => {
-        await ctx.reply('Hello!');
-      },
-    });
+    const handlers = [
+      new HelloHandler(),
+      new TaskCreationHandler(this.authService, this.dataBusService),
+    ];
+
+    for (const handler of handlers) {
+      this.telegramApiService.addHandler(handler);
+    }
 
     await this.telegramApiService.start();
 

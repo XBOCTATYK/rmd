@@ -4,8 +4,8 @@ export type SchedulingEvents = {
         date: string;
         time: string;
         description: string;
-        priority: number;
-        repeat: string;
+        priority?: number;
+        repeat?: string;
     }
 } | {
     type: 'hello',

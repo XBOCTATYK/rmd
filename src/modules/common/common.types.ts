@@ -28,3 +28,11 @@ export interface IDataSourceConfiguration {
 export interface ICommonModuleExports {
     dataProvider: IDataProvider
 }
+
+export interface IAuthUserService {
+    checkPermission(permission: string, userId: string): Promise<boolean>
+}
+
+export interface ITaskScheduleService {
+    saveTask(): Promise<void>
+}

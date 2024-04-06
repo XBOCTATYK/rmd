@@ -3,7 +3,7 @@ import {Context} from 'telegraf';
 export interface ITelegramHandler {
     type: string;
     name: string;
-    fn: (ctx: Context) => Promise<void>;
+    handle: (ctx: Context) => Promise<void>;
 }
 
 export interface ITelegramApiService {
