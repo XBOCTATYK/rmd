@@ -5,8 +5,9 @@ import {wait} from '../../lib/wait';
 import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 import {ISchedulingModuleConfig} from './scheduling.types';
+import {ISchedulingModuleExport} from './exports.types';
 
-export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, Record<string, any>> {
+export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
   private loggerService: ILoggerService;
   private taskScheduleService?: TaskScheduleService;
   private dataBusService: EventBusService<SchedulingEvents>;

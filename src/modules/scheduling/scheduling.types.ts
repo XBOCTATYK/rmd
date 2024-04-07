@@ -1,20 +1,19 @@
-import {EventBusService} from '../databus/services/eventBusService';
+import {Task} from './model';
 
 export type ISchedulingModuleConfig = {
     scheduler: any;
 }
 
-export type ISchedulingModuleExport = {
-    dataBusService: EventBusService<SchedulingModuleDataBusEvent>;
-}
+export interface ITaskScheduleDaoService {
+    saveTask(): Promise<void>;
 
-export type SchedulingModuleDataBusEvent = {
-    type: 'new-task';
-    data: {
-        date: string;
-        time: string;
-        description: string;
-        priority: number;
-        repeat: string;
-    };
+    getTask(): Promise<Task>;
+
+    deleteTask(): Promise<void>;
+
+    updateTaskStatus(): Promise<void>;
+
+    updateNotificationCount(): Promise<void>;
+
+    updateDueDate(): Promise<void>;
 }
