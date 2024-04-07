@@ -2,7 +2,10 @@ import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity()
 export class TaskExtraTypeEntity {
-  @PrimaryGeneratedColumn('increment', {name: 'task_extra_type', type: 'smallint', primaryKeyConstraintName: 'task_extra_type_id_pk'})
+  @PrimaryGeneratedColumn(
+      'increment',
+      {name: 'task_extra_type', type: 'smallint', primaryKeyConstraintName: 'task_extra_type_id_pk'}
+  )
   public id?: number;
 
   @Column({name: 'task_extra_type_name', type: 'varchar'})

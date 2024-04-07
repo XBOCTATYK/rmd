@@ -1,19 +1,33 @@
-import {Task} from './model';
+import {Notification, Task} from './model';
 
 export type ISchedulingModuleConfig = {
     scheduler: any;
 }
 
 export interface ITaskScheduleDaoService {
-    saveTask(): Promise<void>;
+    saveTask(task: Task): Promise<void>;
 
-    getTask(): Promise<Task>;
+    getTask(taskId: number): Promise<Task>;
 
-    deleteTask(): Promise<void>;
+    getTasksByUser(userId: number): Promise<Task[]>;
 
-    updateTaskStatus(): Promise<void>;
+    getTasksByCurrentDate(date: Date): Promise<Task[]>;
 
-    updateNotificationCount(): Promise<void>;
+    deleteTask(taskId: number): Promise<void>;
 
-    updateDueDate(): Promise<void>;
+    updateTaskStatus(taskId: number, status: number): Promise<void>;
+
+    updateNotificationCount(taskId: number, count: number): Promise<void>;
+
+    updateDueDate(taskId: number, dueDate: Date): Promise<void>;
+}
+
+export interface INotificationsDaoService {
+    saveNotification(notification: Notification): Promise<void>;
+
+    getNextNotificationForTask(taskId: number): Promise<Notification>;
+
+    deleteNotification(notificationId: number): Promise<void>;
+
+    updateNotificationAnswer(notificationId: number): Promise<void>;
 }

@@ -1,4 +1,4 @@
-import {TaskEntity} from './db/task.entity';
+import {TaskEntity} from '../../../adapters/schedulingModuleAdapter/model/db/task.entity';
 
 export class Task {
   public id: number | undefined;
@@ -41,7 +41,8 @@ export class Task {
   }
 
   static toEntity(task: Task) {
-    const entity = new TaskEntity(
+    return new TaskEntity(
+        task.id,
         task.description,
         task.userId,
         task.status,
@@ -49,11 +50,5 @@ export class Task {
         task.dueDate,
         task.notificationsCount
     );
-
-    if (task.id) {
-      entity.id = task.id;
-    }
-
-    return entity;
   }
 }

@@ -1,9 +1,10 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {UserEntity} from '../../../common/model/db/user.entity';
+import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {UserEntity} from '../../../../modules/common/model/db/user.entity';
 
 @Entity('task')
 export class TaskEntity {
   constructor(
+      id: number | undefined,
       description: string,
       userId: number,
       status: number,
@@ -11,6 +12,7 @@ export class TaskEntity {
       dueDate: Date,
       notificationsCount: number
   ) {
+    this.id = id;
     this.description = description;
     this.userId = userId;
     this.status = status;
@@ -19,13 +21,17 @@ export class TaskEntity {
     this.notificationsCount = notificationsCount;
   }
 
-  @PrimaryGeneratedColumn('increment', {name: 'task_id', type: 'bigint', primaryKeyConstraintName: 'task_id_pk'})
+  @PrimaryGeneratedColumn(
+      'increment',
+      {name: 'task_id', type: 'bigint', primaryKeyConstraintName: 'task_id_pk'}
+  )
   public id?: number;
 
   @Column({name: 'task_description', type: 'varchar', length: 255})
   public description: string;
 
-  @ManyToOne(() => UserEntity)
+  @Index('task_user_id_fk')
+  @ManyToOne(() => UserEntity, (user) => user.userId)
   @Column({name: 'user_id', type: 'bigint'})
   public userId: number;
 

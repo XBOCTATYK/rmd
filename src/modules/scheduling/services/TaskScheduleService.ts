@@ -1,10 +1,11 @@
-import {DataSource} from 'typeorm';
 import {ITaskScheduleService} from '../../common/common.types';
+import {ITaskScheduleDaoService} from '../scheduling.types';
 
 export class TaskScheduleService implements ITaskScheduleService {
-  private readonly dataSource: DataSource;
-  constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
+  private taskScheduleService: ITaskScheduleDaoService;
+
+  constructor(taskScheduleService: ITaskScheduleDaoService) {
+    this.taskScheduleService = taskScheduleService;
   }
 
 

@@ -1,11 +1,15 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {TaskExtraTypeEntity} from './taskExtraType.entity';
 
 @Entity()
 export class TaskExtraEntity {
-    @PrimaryGeneratedColumn('identity', {name: 'task_extra_id', type: 'bigint', primaryKeyConstraintName: 'task_extra_id_pk'})
+    @PrimaryGeneratedColumn(
+        'increment',
+        {name: 'task_extra_id', type: 'bigint', primaryKeyConstraintName: 'task_extra_id_pk'}
+    )
   public id?: number;
 
+    @Index('task_extra_task_id_idx')
     @Column({name: 'task_id', type: 'bigint'})
     public taskId: number;
 
