@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {PinoLoggerService} from './modules/common/service/LoggerService';
 import {ConfigurationModule} from './modules/configuration/configuration.module';
 import {IDataSourceConfiguration} from './modules/common/common.types';
@@ -24,8 +25,7 @@ import {evaluateModuleDataScripts, setEntitiesToDataProvider} from './lib/setEnt
   ];
 
   setEntitiesToDataProvider(dataProvider, modules);
-  const dataSource = await dataProvider.connect();
-  await dataSource.initialize();
+  const dataSource = await dataProvider.getDataSource();
   await dataSource.synchronize();
 
   await evaluateModuleDataScripts(dataProvider, modules);

@@ -13,8 +13,8 @@ export class TaskExtraEntity {
     @Column({name: 'task_id', type: 'bigint'})
     public taskId: number;
 
-    @ManyToOne(() => TaskExtraTypeEntity, (settingType) => settingType.id)
-    @Column({name: 'task_extra_type'})
+    @ManyToOne(() => TaskExtraTypeEntity, (taskExtraTypeEntity) => taskExtraTypeEntity.id)
+    @Column({name: 'task_extra_type', type: 'smallint'})
     public type: TaskExtraTypeEntity;
 
     @Column({name: 'task_extra_value', type: 'varchar', length: 255})

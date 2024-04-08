@@ -14,7 +14,8 @@ export class TaskExtraTypeEntity {
   @Column({name: 'task_extra_type_description', type: 'varchar'})
   public description: string;
 
-  constructor(name: string, description: string) {
+  constructor(id: number | undefined, name: string, description: string) {
+    this.id = id;
     this.name = name;
     this.description = description;
   }
