@@ -13,6 +13,10 @@ export class TypeOrmPostgresDataProvider implements IDataProvider {
     });
   }
 
+  public getUninitializedDataSource() {
+    return this.dataSource;
+  }
+
   public getDataSource() {
     if (!this.dataSource.isInitialized) {
       throw new Error('DataSource was not initialized! You possibly forgot to call connect() first!');

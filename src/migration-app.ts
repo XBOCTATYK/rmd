@@ -6,7 +6,7 @@ import {CommonModule} from './modules/common/common.module';
 import {CommonModuleMigrations} from './modules/common/common.migrations';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
 import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
-import {evaluateModuleDataScripts, setEntitiesToDataProvider} from './lib/setEntitiesToDataProvider';
+import {evaluateModuleDataScripts} from './lib/setEntitiesToDataProvider';
 
 (async function() {
   const loggerService = new PinoLoggerService();
@@ -14,19 +14,17 @@ import {evaluateModuleDataScripts, setEntitiesToDataProvider} from './lib/setEnt
   const {configService} = configurationModule.init({env: 'local'}).exports();
 
   const dbConfig = configService.get<IDataSourceConfiguration>('db');
-  console.log(configService.get());
-  const commonModule = new CommonModule(loggerService);
-  const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
 
-  const modules = [
+  const migrations = [
     new CommonModuleMigrations(),
     new SchedulingModuleMigrations(),
     new SchedulingModuleAdapterMigrations(),
   ];
+  const commonModule = new CommonModule(loggerService, migrations);
+  const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
 
-  setEntitiesToDataProvider(dataProvider, modules);
   const dataSource = await dataProvider.getDataSource();
   await dataSource.synchronize();
 
-  await evaluateModuleDataScripts(dataProvider, modules);
+  await evaluateModuleDataScripts(dataProvider, migrations);
 })();

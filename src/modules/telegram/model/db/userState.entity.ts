@@ -1,6 +1,6 @@
 import {Column, Entity} from 'typeorm';
 
-@Entity()
+@Entity({name: 'user_state'})
 export class UserStateEntity {
   constructor(id: number, state: string, stateParams?: string) {
     this.id = id;

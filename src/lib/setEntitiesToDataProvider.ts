@@ -10,7 +10,7 @@ export function setEntitiesToDataProvider(dataProvider: IDataProvider, modules: 
     allEntities.push(...entities);
   }
 
-  const dataSource = dataProvider.getDataSource();
+  const dataSource = dataProvider.getUninitializedDataSource();
   // @ts-ignore
   dataSource.setOptions({entities: allEntities});
 

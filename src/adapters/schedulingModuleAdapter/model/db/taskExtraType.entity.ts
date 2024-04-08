@@ -1,6 +1,6 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity()
+@Entity({name: 'task_extra_type'})
 export class TaskExtraTypeEntity {
   @PrimaryGeneratedColumn(
       'increment',

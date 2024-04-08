@@ -1,7 +1,7 @@
 import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {TaskEntity} from './task.entity';
 
-@Entity()
+@Entity({name: 'notification'})
 export class NotificationEntity {
     @PrimaryGeneratedColumn(
         'increment',

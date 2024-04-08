@@ -5,7 +5,6 @@ import {PinoLoggerService} from './modules/common/service/LoggerService';
 import {ConfigurationModule} from './modules/configuration/configuration.module';
 import {IDataSourceConfiguration} from './modules/common/common.types';
 import {SchedulingModule} from './modules/scheduling/scheduling.module';
-import {setEntitiesToDataProvider} from './lib/setEntitiesToDataProvider';
 import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
 import {CommonModuleMigrations} from './modules/common/common.migrations';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
@@ -15,6 +14,7 @@ import {ITelegramModuleConfig} from './modules/telegram/telegram.types';
 import {ISchedulingModuleConfig} from './modules';
 import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitterEventBusAdapter';
 import {AuthModule} from './modules/auth/auth.module';
+import {SchedulingModuleAdapter} from './adapters/schedulingModuleAdapter/schedulingModule.adapter';
 
 const moduleMigrationsList = [
   new SchedulingModuleAdapterMigrations(),
@@ -29,9 +29,9 @@ const moduleMigrationsList = [
 
   const dbConfig = configService.get<IDataSourceConfiguration>('db');
   console.log(configService.get());
-  const commonModule = new CommonModule(loggerService);
+
+  const commonModule = new CommonModule(loggerService, moduleMigrationsList);
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
-  setEntitiesToDataProvider(dataProvider, moduleMigrationsList);
 
   const dataBusModule = new DataBusModule(dataProvider, loggerService, new NodeEmitterEventBusAdapter());
   await dataBusModule.init({});
@@ -39,7 +39,7 @@ const moduleMigrationsList = [
 
   const taskTopic = dataBusFactory.getDataBusService<SchedulingEvents>('scheduling-events');
 
-  const schedulingModule = new SchedulingModule(loggerService, taskTopic);
+  const schedulingModule = new SchedulingModule(loggerService, taskTopic, new SchedulingModuleAdapter(dataProvider));
   schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling'));
 
   const authModule = new AuthModule(dataProvider, loggerService);

@@ -1,7 +1,7 @@
 import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {TaskExtraTypeEntity} from './taskExtraType.entity';
 
-@Entity()
+@Entity({name: 'task_extra'})
 export class TaskExtraEntity {
     @PrimaryGeneratedColumn(
         'increment',

@@ -7,6 +7,7 @@ export interface IDataSource {
 }
 
 export interface IDataProvider {
+    getUninitializedDataSource(): DataSource
     getDataSource(): DataSource
     connect(): Promise<DataSource>
     disconnect(): Promise<void>
