@@ -5,7 +5,7 @@ import {wait} from '../../lib/wait';
 import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 import {ISchedulingModuleConfig} from './scheduling.types';
-import {ISchedulingModuleExport} from './exports.types';
+import {ISchedulingModuleExport, Task} from './exports.types';
 import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
 import {NotificationService} from './services/NotificationService';
 
@@ -36,6 +36,15 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
 
   public async initModule(config: ISchedulingModuleConfig) {
     this.loggerService.info('SchedulingModule initialized');
+
+    await this.dataBusService.addListener('scheduling', async (event) => {
+      if (event.type === 'new-task') {
+        const {description, date, time, priority = 2, repeat = 'none'} = event.data;
+        this.taskScheduleService?.saveTask(
+            new Task(undefined, description, 1, 0, priority, 2, new Date(date + ' ' + time))
+        );
+      }
+    });
 
     await this.tryStart();
     return this;
