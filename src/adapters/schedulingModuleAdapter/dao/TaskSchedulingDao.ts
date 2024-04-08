@@ -3,7 +3,7 @@ import {ITaskScheduleDaoService, Task} from '../../..';
 import {TaskEntity} from '../model/db/task.entity';
 import {TaskMapper} from '../model/mappers/TaskMapper';
 
-export class TaskScheduleDao implements ITaskScheduleDaoService {
+export class TaskScheduleDaoService implements ITaskScheduleDaoService {
   private dataSource: DataSource;
   private repository: Repository<TaskEntity>;
 

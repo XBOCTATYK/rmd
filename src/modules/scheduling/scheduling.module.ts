@@ -6,16 +6,32 @@ import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 import {ISchedulingModuleConfig} from './scheduling.types';
 import {ISchedulingModuleExport} from './exports.types';
+import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
+import {NotificationService} from './services/NotificationService';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
   private loggerService: ILoggerService;
-  private taskScheduleService?: TaskScheduleService;
   private dataBusService: EventBusService<SchedulingEvents>;
+  private readonly taskScheduleService?: TaskScheduleService;
+  private notificationService: NotificationService;
 
-  constructor(loggerService: ILoggerService, eventBusService: EventBusService<SchedulingEvents>) {
+  constructor(
+      loggerService: ILoggerService,
+      eventBusService: EventBusService<SchedulingEvents>,
+      schedulingModuleAdapter: ISchedulingModuleAdapter
+  ) {
     super('scheduling');
+
     this.loggerService = loggerService;
     this.dataBusService = eventBusService;
+    this.taskScheduleService = new TaskScheduleService(
+        loggerService,
+        schedulingModuleAdapter.taskScheduleDaoService
+    );
+    this.notificationService = new NotificationService(
+        loggerService,
+        schedulingModuleAdapter.notificationDaoService
+    );
   }
 
   public async initModule(config: ISchedulingModuleConfig) {
