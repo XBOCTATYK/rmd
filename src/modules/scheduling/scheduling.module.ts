@@ -39,7 +39,7 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
 
     await this.dataBusService.addListener('scheduling', async (event) => {
       if (event.type === 'new-task') {
-        const {description, date, time, priority = 2, repeat = 'none'} = event.data;
+        const {description, date, time, priority = 2} = event.data;
         this.taskScheduleService?.saveTask(
             new Task(undefined, description, 1, 0, priority, 2, new Date(date + ' ' + time))
         );
