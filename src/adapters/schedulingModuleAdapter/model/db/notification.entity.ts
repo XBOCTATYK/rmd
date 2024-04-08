@@ -12,7 +12,7 @@ export class NotificationEntity {
     @Column({name: 'notification_timestamp', type: 'timestamp', nullable: false})
       timestamp: Date;
 
-    @Column({name: 'notification_answer', type: 'smallint', nullable: true})
+    @Column({name: 'notification_answer', type: 'smallint', nullable: false, default: 0})
       answer: number;
 
     @Index('notification_task_id_fk')

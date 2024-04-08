@@ -11,6 +11,7 @@ import startOfDay from 'date-fns/startOfDay';
 import closest from 'date-fns/closestTo';
 import isBefore from 'date-fns/isBefore';
 import isAfter from 'date-fns/isAfter';
+import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 
 import {DATE_FNS_OPTIONS, DATE_FORMAT, DateFnsOptions} from '../formats/formats';
 import {IExtendedDate} from './extended-date.interface';
@@ -100,6 +101,10 @@ export class ExtendedDate implements IExtendedDate {
 
   format(formatStr: string) {
     return format(this.value, formatStr, this.options);
+  }
+
+  roundToMinutes() {
+    return ExtendedDate.of(roundToNearestMinutes(this.value));
   }
 
   closest(dates: (ExtendedDate | Date)[]) {

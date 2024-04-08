@@ -28,5 +28,9 @@ export interface IExtendedDate {
 
     isAfterThan(date: Date): boolean
 
+    roundToMinutes(): IExtendedDate
+
+    closest(date: (IExtendedDate | Date)[]): IExtendedDate
+
     valueOf(): number
 }

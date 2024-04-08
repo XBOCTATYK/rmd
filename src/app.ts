@@ -6,7 +6,7 @@ import {ConfigurationModule} from './modules/configuration/configuration.module'
 import {IDataSourceConfiguration} from './modules/common/common.types';
 import {SchedulingModule} from './modules/scheduling/scheduling.module';
 import {setEntitiesToDataProvider} from './lib/setEntitiesToDataProvider';
-import {TelegramModuleMigrations} from './modules/telegram/telegram.migrations';
+import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
 import {CommonModuleMigrations} from './modules/common/common.migrations';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
 import {DataBusModule} from './modules/databus/databus.module';
@@ -17,7 +17,7 @@ import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitte
 import {AuthModule} from './modules/auth/auth.module';
 
 const moduleMigrationsList = [
-  new TelegramModuleMigrations(),
+  new SchedulingModuleAdapterMigrations(),
   new CommonModuleMigrations(),
   new SchedulingModuleMigrations(),
 ];

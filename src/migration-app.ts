@@ -4,7 +4,7 @@ import {IDataSourceConfiguration} from './modules/common/common.types';
 import {CommonModule} from './modules/common/common.module';
 import {CommonModuleMigrations} from './modules/common/common.migrations';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
-import {TelegramModuleMigrations} from './modules/telegram/telegram.migrations';
+import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
 import {evaluateModuleDataScripts, setEntitiesToDataProvider} from './lib/setEntitiesToDataProvider';
 
 (async function() {
@@ -20,7 +20,7 @@ import {evaluateModuleDataScripts, setEntitiesToDataProvider} from './lib/setEnt
   const modules = [
     new CommonModuleMigrations(),
     new SchedulingModuleMigrations(),
-    new TelegramModuleMigrations(),
+    new SchedulingModuleAdapterMigrations(),
   ];
 
   setEntitiesToDataProvider(dataProvider, modules);
