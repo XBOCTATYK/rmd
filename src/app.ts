@@ -12,7 +12,7 @@ import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleM
 import {DataBusModule} from './modules/databus/databus.module';
 import {SchedulingEvents} from './modules/common/databus/schedulingMessaging.types';
 import {ITelegramModuleConfig} from './modules/telegram/telegram.types';
-import {ISchedulingModuleConfig} from './modules/scheduling/scheduling.types';
+import {ISchedulingModuleConfig} from './modules';
 import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitterEventBusAdapter';
 import {AuthModule} from './modules/auth/auth.module';
 
