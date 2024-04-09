@@ -1,4 +1,4 @@
-import {Context} from 'telegraf';
+import {Context, Telegraf} from 'telegraf';
 
 export interface ITelegramHandler {
     type: string;
@@ -7,7 +7,7 @@ export interface ITelegramHandler {
 }
 
 export interface ITelegramApiService {
-    getProvider(): any;
+    getProvider(): Telegraf;
     start(): void;
     addHandler(handler: ITelegramHandler): void;
 }

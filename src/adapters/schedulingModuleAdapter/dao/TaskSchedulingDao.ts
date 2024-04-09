@@ -35,8 +35,10 @@ export class TaskScheduleDaoService implements ITaskScheduleDaoService {
     return taskEntityList.map((taskEntity) => TaskMapper.toDto(taskEntity));
   }
 
-  async saveTask(task: Task): Promise<void> {
-    await this.repository.save(TaskMapper.toEntity(task));
+  async saveTask(task: Task): Promise<Task> {
+    return TaskMapper.toDto(
+        await this.repository.save(TaskMapper.toEntity(task))
+    );
   }
 
   async updateDueDate(taskId: number, dueDate: Date): Promise<void> {

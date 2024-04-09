@@ -12,9 +12,9 @@ export class TaskScheduleService implements ITaskScheduleService {
     this.taskScheduleService = taskScheduleService;
   }
 
-  public async saveTask(task: Task): Promise<void> {
+  public async saveTask(task: Task): Promise<Task> {
     this.loggerService.info('Saving task: ' + task.id);
-    await this.taskScheduleService.saveTask(task);
+    return await this.taskScheduleService.saveTask(task);
   }
 
   async deleteTask(taskId: number): Promise<void> {

@@ -5,7 +5,7 @@ export type ISchedulingModuleConfig = {
 }
 
 export interface ITaskScheduleDaoService {
-    saveTask(task: Task): Promise<void>;
+    saveTask(task: Task): Promise<Task>;
 
     findTask(taskId: number): Promise<Task | null>;
 
@@ -26,6 +26,8 @@ export interface INotificationsDaoService {
     saveNotification(notification: Notification): Promise<void>;
 
     findNextNotificationForTask(taskId: number): Promise<Notification | null>;
+
+    findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]>;
 
     deleteNotification(notificationId: number): Promise<void>;
 

@@ -36,7 +36,7 @@ export interface IAuthUserService {
 }
 
 export interface ITaskScheduleService {
-    saveTask(task: Task): Promise<void>
+    saveTask(task: Task): Promise<Task>
     getTasksByUser(userId: number): Promise<Task[]>
     getTasksByCurrentDate(date: Date): Promise<Task[]>
     findTask(taskId: number): Promise<Task | null>
@@ -49,6 +49,7 @@ export interface ITaskScheduleService {
 export interface INotificationsService {
     saveNotification(notification: Notification): Promise<void>
     findNextNotificationForTask(taskId: number): Promise<Notification>
+    findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]>
     deleteNotification(notificationId: number): Promise<void>
     updateNotificationAnswer(notificationId: number, answer: number): Promise<void>
 }

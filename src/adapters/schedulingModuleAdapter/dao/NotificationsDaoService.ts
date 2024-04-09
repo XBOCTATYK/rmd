@@ -25,6 +25,12 @@ export class NotificationsDaoService implements INotificationsDaoService {
     return NotificationMapper.toDto(notificationEntity);
   }
 
+  async findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]> {
+    const notificationList = await this.repository.find({where: {timestamp}});
+
+    return notificationList.map((notificationEntity) => NotificationMapper.toDto(notificationEntity));
+  }
+
   async saveNotification(notification: Notification): Promise<void> {
     await this.repository.save(NotificationMapper.toEntity(notification));
   }

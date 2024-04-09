@@ -12,4 +12,11 @@ export type SchedulingEvents = {
     data: {
         message: string
     }
+} | {
+    type: 'send-notification';
+    data: {
+        dueDate: string;
+        description: string;
+        userId: number;
+    }
 }

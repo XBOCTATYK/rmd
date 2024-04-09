@@ -32,6 +32,11 @@ export class NotificationService implements INotificationsService {
     return notification;
   }
 
+  async findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]> {
+    this.loggerService.info('Finding notification by timestamp: ' + timestamp);
+    return await this.notificationDaoService.findNotificationsByTimestamp(timestamp);
+  }
+
   async saveNotification(notification: Notification): Promise<void> {
     this.loggerService.info('Saving notification: ' + notification);
     await this.notificationDaoService.saveNotification(notification);

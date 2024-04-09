@@ -8,6 +8,8 @@ import {ISchedulingModuleConfig} from './scheduling.types';
 import {ISchedulingModuleExport, Task} from './exports.types';
 import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
 import {NotificationService} from './services/NotificationService';
+import {Notification} from './model';
+import {ExtendedDate} from '../../lib/date-services/extended-date';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
   private loggerService: ILoggerService;
@@ -40,9 +42,20 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
     await this.dataBusService.addListener('scheduling', async (event) => {
       if (event.type === 'new-task') {
         const {description, date, time, priority = 2} = event.data;
-        this.taskScheduleService?.saveTask(
+        const savedTask = await this.taskScheduleService?.saveTask(
             new Task(undefined, description, 1, 0, priority, 2, new Date(date + ' ' + time))
         );
+
+        if (savedTask) {
+          await this.notificationService.saveNotification(
+              new Notification(
+                  undefined,
+                  ExtendedDate.of(new Date()).addHours(2).get(),
+                  0,
+                  savedTask.id!
+              )
+          );
+        }
       }
     });
 
