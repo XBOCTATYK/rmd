@@ -13,7 +13,7 @@ import {ExtendedDate} from '../../lib/date-services/extended-date';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
   private loggerService: ILoggerService;
-  private dataBusService: EventBusService<SchedulingEvents>;
+  private eventBusService: EventBusService<SchedulingEvents>;
   private readonly taskScheduleService?: TaskScheduleService;
   private notificationService: NotificationService;
 
@@ -25,7 +25,7 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
     super('scheduling');
 
     this.loggerService = loggerService;
-    this.dataBusService = eventBusService;
+    this.eventBusService = eventBusService;
     this.taskScheduleService = new TaskScheduleService(
         loggerService,
         schedulingModuleAdapter.taskScheduleDaoService
@@ -39,7 +39,7 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
   public async initModule(config: ISchedulingModuleConfig) {
     this.loggerService.info('SchedulingModule initialized');
 
-    await this.dataBusService.addListener('scheduling', async (event) => {
+    await this.eventBusService.addListener('scheduling', async (event) => {
       if (event.type === 'new-task') {
         const {description, date, time, priority = 2} = event.data;
         const savedTask = await this.taskScheduleService?.saveTask(
@@ -59,15 +59,13 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
       }
     });
 
-    await this.tryStart();
+    await this.helloCheck();
     return this;
   }
 
-  public async tryStart() {
+  public async helloCheck() {
     await wait(2000);
-    await this.dataBusService.fireEvent({type: 'hello', data: {message: 'hello'}});
-    await wait(2000);
-    await this.dataBusService.fireEvent({type: 'hello', data: {message: 'hello2'}});
+    await this.eventBusService.fireEvent({type: 'hello', data: {message: 'hello'}});
   }
   public buildExports() {
     return {

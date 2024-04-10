@@ -1,5 +1,5 @@
 import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {UserEntity} from '../../../../modules/common/model/db/user.entity';
+import {UserEntity} from '../../../authModuleAdapter/model/db/user.entity';
 
 @Entity('task')
 export class TaskEntity {

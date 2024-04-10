@@ -11,7 +11,7 @@ export class UserSettingEntity {
 
     @Index('user_setting_user_id_idx')
     @Column({name: 'user_id', type: 'bigint'})
-      userId: number;
+      userId?: number;
 
     @Column({name: 'setting_type', type: 'varchar'})
     @ManyToOne(() => SettingTypeEntity, (settingType) => settingType.id)
@@ -22,7 +22,7 @@ export class UserSettingEntity {
 
     constructor(
         id: number | undefined,
-        userId: number,
+        userId: number | undefined,
         settingType: SettingTypeEntity,
         settingValue: string
     ) {

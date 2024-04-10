@@ -12,4 +12,8 @@ export class UserAuthService implements IAuthUserService {
   public async checkPermission(permission: string, userId: string): Promise<boolean> {
     return this.allowedUsers.includes(userId);
   }
+
+  public async findUserById(userId: string): Promise<any> {
+    return Promise.resolve();
+  }
 }
