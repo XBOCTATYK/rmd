@@ -13,7 +13,11 @@ export class UserMapper {
     );
   }
 
-  public static toDto(user: UserEntity): User {
+  public static toDto(user: UserEntity | null): User | null {
+    if (!user) {
+      return null;
+    }
+
     return {
       userId: user.userId,
       publicUserId: user.publicUserId,

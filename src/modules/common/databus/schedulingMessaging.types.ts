@@ -17,6 +17,6 @@ export type SchedulingEvents = {
     data: {
         dueDate: string;
         description: string;
-        userId: number;
+        publicUserId: string;
     }
 }

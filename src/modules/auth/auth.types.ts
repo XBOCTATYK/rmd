@@ -1,4 +1,5 @@
 import {UserAuthService} from './services/UserAuthService';
+import {User} from './model';
 
 export interface IAuthModuleConfig {
     secretHash: string
@@ -7,4 +8,9 @@ export interface IAuthModuleConfig {
 
 export interface IAuthModuleExports {
     userAuthService: UserAuthService;
+}
+
+export interface IUserAuthDao {
+    findUserByPublicId(publicUserId: string): Promise<User | null>;
+    findUserByUserId(userId: number): Promise<User | null>;
 }

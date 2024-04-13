@@ -38,7 +38,7 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
 
       if (event.type === 'send-notification') {
         this.telegramApiService?.getProvider().telegram.sendMessage(
-            event.data.userId,
+            event.data.publicUserId,
             event.data.description + '\n' + event.data.dueDate
         );
       }

@@ -1,4 +1,5 @@
 import {ITelegramApiService} from './services/service.types';
+import {TelegramUser} from './model/TelegramUser';
 
 export interface ITelegramModuleConfig {
     token: string
@@ -12,4 +13,9 @@ export interface ITelegramModuleExports {
 export interface IMessageMapper {
     validate: (message: string) => boolean
     map: (message: string) => string
+}
+
+export interface ITelegramUserService {
+    getUserByTelegramId: (telegramId: number) => Promise<TelegramUser>
+    getUserByPublicId: (publicUserId: string) => Promise<TelegramUser>
 }

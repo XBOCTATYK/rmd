@@ -10,17 +10,22 @@ import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAd
 import {NotificationService} from './services/NotificationService';
 import {Notification} from './model';
 import {ExtendedDate} from '../../lib/date-services/extended-date';
+import {IAuthUserService} from '../common/common.types';
+import {SchedulerService} from './services/SchedulerService';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
   private loggerService: ILoggerService;
   private eventBusService: EventBusService<SchedulingEvents>;
   private readonly taskScheduleService?: TaskScheduleService;
   private notificationService: NotificationService;
+  private authService: IAuthUserService;
+  private schedulerService: SchedulerService;
 
   constructor(
       loggerService: ILoggerService,
       eventBusService: EventBusService<SchedulingEvents>,
-      schedulingModuleAdapter: ISchedulingModuleAdapter
+      schedulingModuleAdapter: ISchedulingModuleAdapter,
+      authService: IAuthUserService
   ) {
     super('scheduling');
 
@@ -33,6 +38,14 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
     this.notificationService = new NotificationService(
         loggerService,
         schedulingModuleAdapter.notificationDaoService
+    );
+
+    this.authService = authService;
+    this.schedulerService = new SchedulerService(
+        this.taskScheduleService,
+        this.notificationService,
+        this.eventBusService,
+        this.authService
     );
   }
 

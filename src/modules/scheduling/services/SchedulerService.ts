@@ -1,4 +1,4 @@
-import {INotificationsService, ITaskScheduleService} from '../../common/common.types';
+import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
@@ -9,15 +9,18 @@ export class SchedulerService {
   private taskScheduleService: ITaskScheduleService;
   private notificationService: INotificationsService;
   private eventBusService: EventBusService<SchedulingEvents>;
+  private authService: IAuthUserService;
 
   constructor(
       taskScheduleService: ITaskScheduleService,
       notificationService: INotificationsService,
-      eventBusService: EventBusService<SchedulingEvents>
+      eventBusService: EventBusService<SchedulingEvents>,
+      authService: IAuthUserService
   ) {
     this.taskScheduleService = taskScheduleService;
     this.notificationService = notificationService;
     this.eventBusService = eventBusService;
+    this.authService = authService;
   }
 
   public start() {
@@ -46,11 +49,10 @@ export class SchedulerService {
         await this.taskScheduleService.updateNotificationCount(task.id!, nextNotificationCount);
       }
 
-      const userTgId = 'here';
       await this.eventBusService.fireEvent({type: 'send-notification', data: {
         dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
         description: task.description,
-        userId: Number(userTgId),
+        publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,
       }});
     }
   }

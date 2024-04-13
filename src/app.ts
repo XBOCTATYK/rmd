@@ -15,6 +15,7 @@ import {ISchedulingModuleConfig} from './modules';
 import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitterEventBusAdapter';
 import {AuthModule} from './modules/auth/auth.module';
 import {SchedulingModuleAdapter} from './adapters/schedulingModuleAdapter/schedulingModule.adapter';
+import {AuthModuleAdapter} from './adapters/authModuleAdapter/authModule.adapter';
 
 const moduleMigrationsList = [
   new SchedulingModuleAdapterMigrations(),
@@ -38,13 +39,18 @@ const moduleMigrationsList = [
   const {dataBusFactory} = dataBusModule.exports();
 
   const taskTopic = dataBusFactory.getDataBusService<SchedulingEvents>('scheduling-events');
-
-  const schedulingModule = new SchedulingModule(loggerService, taskTopic, new SchedulingModuleAdapter(dataProvider));
-  schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling'));
-
-  const authModule = new AuthModule(dataProvider, loggerService);
+  const authModule = new AuthModule(dataProvider, loggerService, new AuthModuleAdapter(dataProvider));
   await authModule.init(configService.get('auth'));
   const {userAuthService} = authModule.exports();
+
+  const schedulingModule = new SchedulingModule(
+      loggerService,
+      taskTopic,
+      new SchedulingModuleAdapter(dataProvider),
+      userAuthService
+  );
+  schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling'));
+
 
   const tgApp = new TelegramModule(loggerService, taskTopic, userAuthService);
   await tgApp.init(configService.get<ITelegramModuleConfig>('bot'));
