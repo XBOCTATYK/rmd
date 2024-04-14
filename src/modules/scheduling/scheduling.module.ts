@@ -8,7 +8,7 @@ import {ISchedulingModuleConfig} from './scheduling.types';
 import {ISchedulingModuleExport, Task} from './exports.types';
 import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
 import {NotificationService} from './services/NotificationService';
-import {Notification} from './model';
+import {NotificationDto} from './model';
 import {ExtendedDate} from '../../lib/date-services/extended-date';
 import {IAuthUserService} from '../common/common.types';
 import {SchedulerService} from './services/SchedulerService';
@@ -61,7 +61,7 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
 
         if (savedTask) {
           await this.notificationService.saveNotification(
-              new Notification(
+              new NotificationDto(
                   undefined,
                   ExtendedDate.of(new Date()).addHours(2).get(),
                   0,

@@ -1,4 +1,4 @@
-export class Notification {
+export class NotificationDto {
   id: number | undefined;
   timestamp: Date;
   answer: number;

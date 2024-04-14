@@ -1,4 +1,4 @@
-import {Notification, Task} from './model';
+import {NotificationDto, Task} from './model';
 
 export type ISchedulingModuleConfig = {
     scheduler: any;
@@ -23,11 +23,11 @@ export interface ITaskScheduleDaoService {
 }
 
 export interface INotificationsDaoService {
-    saveNotification(notification: Notification): Promise<void>;
+    saveNotification(notification: NotificationDto): Promise<void>;
 
-    findNextNotificationForTask(taskId: number): Promise<Notification | null>;
+    findNextNotificationForTask(taskId: number): Promise<NotificationDto | null>;
 
-    findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]>;
+    findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]>;
 
     deleteNotification(notificationId: number): Promise<void>;
 

@@ -3,7 +3,7 @@ import {ExtendedDate} from '../../../lib/date-services/extended-date';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {FULL_FORMAT} from '../../../lib/formats/formats';
-import {Notification} from '../model';
+import {NotificationDto} from '../model';
 
 export class SchedulerService {
   private taskScheduleService: ITaskScheduleService;
@@ -33,7 +33,7 @@ export class SchedulerService {
     }, 60000);
   }
 
-  private async processNotification(notification: Notification) {
+  private async processNotification(notification: NotificationDto) {
     const task = await this.taskScheduleService.findTask(notification.taskId);
 
     if (task) {
@@ -44,7 +44,7 @@ export class SchedulerService {
       } else {
         const nextNotificationTime = ExtendedDate.of(notification.timestamp).addHours(2).get();
         await this.notificationService.saveNotification(
-            new Notification(undefined, nextNotificationTime, notification.taskId, 0)
+            new NotificationDto(undefined, nextNotificationTime, notification.taskId, 0)
         );
         await this.taskScheduleService.updateNotificationCount(task.id!, nextNotificationCount);
       }

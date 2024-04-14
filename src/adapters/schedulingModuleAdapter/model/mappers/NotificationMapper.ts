@@ -1,9 +1,9 @@
 import {NotificationEntity} from '../db/notification.entity';
-import {Notification} from '../../../../modules';
+import {NotificationDto} from '../../../../modules';
 
 export class NotificationMapper {
   public static toDto(entity: NotificationEntity) {
-    return new Notification(
+    return new NotificationDto(
         entity.id,
         entity.timestamp,
         entity.answer,
@@ -11,7 +11,7 @@ export class NotificationMapper {
     );
   }
 
-  public static toEntity(notification: Notification) {
+  public static toEntity(notification: NotificationDto) {
     return new NotificationEntity(
         notification.id,
         notification.timestamp,

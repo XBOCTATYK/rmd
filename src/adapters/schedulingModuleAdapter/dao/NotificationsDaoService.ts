@@ -1,5 +1,5 @@
 import {DataSource, Repository} from 'typeorm';
-import {INotificationsDaoService, Notification} from '../../..';
+import {INotificationsDaoService, NotificationDto} from '../../..';
 import {NotificationEntity} from '../model/db/notification.entity';
 import {NotificationMapper} from '../model/mappers/NotificationMapper';
 
@@ -15,7 +15,7 @@ export class NotificationsDaoService implements INotificationsDaoService {
     await this.repository.delete(notificationId);
   }
 
-  async findNextNotificationForTask(taskId: number): Promise<Notification | null> {
+  async findNextNotificationForTask(taskId: number): Promise<NotificationDto | null> {
     const notificationEntity = await this.repository.findOne({where: {taskId, answer: 0}});
 
     if (!notificationEntity) {
@@ -25,13 +25,13 @@ export class NotificationsDaoService implements INotificationsDaoService {
     return NotificationMapper.toDto(notificationEntity);
   }
 
-  async findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]> {
+  async findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]> {
     const notificationList = await this.repository.find({where: {timestamp}});
 
     return notificationList.map((notificationEntity) => NotificationMapper.toDto(notificationEntity));
   }
 
-  async saveNotification(notification: Notification): Promise<void> {
+  async saveNotification(notification: NotificationDto): Promise<void> {
     await this.repository.save(NotificationMapper.toEntity(notification));
   }
 

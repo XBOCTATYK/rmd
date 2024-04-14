@@ -1,7 +1,7 @@
 import {INotificationsDaoService} from '../scheduling.types';
 import {ILoggerService} from '../../common/service/service.types';
 import {INotificationsService} from '../../common/common.types';
-import {Notification} from '../model';
+import {NotificationDto} from '../model';
 
 export class NotificationService implements INotificationsService {
   private notificationDaoService: INotificationsDaoService;
@@ -17,7 +17,7 @@ export class NotificationService implements INotificationsService {
     await this.notificationDaoService.deleteNotification(notificationId);
   }
 
-  async findNextNotificationForTask(taskId: number): Promise<Notification> {
+  async findNextNotificationForTask(taskId: number): Promise<NotificationDto> {
     this.loggerService.info('Finding next notification for task: ' + taskId);
 
     const notification = await this.notificationDaoService.findNextNotificationForTask(taskId);
@@ -32,12 +32,12 @@ export class NotificationService implements INotificationsService {
     return notification;
   }
 
-  async findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]> {
+  async findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]> {
     this.loggerService.info('Finding notification by timestamp: ' + timestamp);
     return await this.notificationDaoService.findNotificationsByTimestamp(timestamp);
   }
 
-  async saveNotification(notification: Notification): Promise<void> {
+  async saveNotification(notification: NotificationDto): Promise<void> {
     this.loggerService.info('Saving notification: ' + notification);
     await this.notificationDaoService.saveNotification(notification);
   }

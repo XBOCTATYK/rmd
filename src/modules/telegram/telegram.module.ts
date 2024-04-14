@@ -8,12 +8,14 @@ import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 import {IAuthUserService} from '../common/common.types';
 import {TaskCreationHandler} from './handlers/TaskCreationHandler';
 import {HelloHandler} from './handlers/HelloHandler';
+import {TelegramUserService} from './services/TelegramUserService';
 
 export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, ITelegramModuleExports> {
-  private telegramApiService?: ITelegramApiService;
   private loggerService: ILoggerService;
-  private dataBusService: EventBusService<SchedulingEvents>;
+  private readonly dataBusService: EventBusService<SchedulingEvents>;
   private readonly authService: IAuthUserService;
+  private telegramApiService?: ITelegramApiService;
+  private telegramUserService?: TelegramUserService;
 
   constructor(
       loggerService: ILoggerService,
@@ -29,16 +31,20 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
 
   protected async initModule(config: ITelegramModuleConfig) {
     this.telegramApiService = new TelegramApiService(config.token);
+    this.telegramUserService = new TelegramUserService(
+        config.publicUserHashSecret,
+        config.iv
+    );
 
     this.loggerService.info('TelegramModule initialized');
-    await this.dataBusService.addListener('telegram', (event) => {
+    await this.dataBusService.addListener('telegram', async (event) => {
       if (event.type === 'hello') {
         console.log(event.data.message);
       }
 
       if (event.type === 'send-notification') {
         this.telegramApiService?.getProvider().telegram.sendMessage(
-            event.data.publicUserId,
+            (await this.telegramUserService!.getUserByPublicId(event.data.publicUserId)).telegramId,
             event.data.description + '\n' + event.data.dueDate
         );
       }

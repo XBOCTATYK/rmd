@@ -1,5 +1,5 @@
 import {DataSource} from 'typeorm';
-import {Notification, Task} from '../scheduling';
+import {NotificationDto, Task} from '../scheduling';
 import {User} from '../auth';
 
 export interface IDataSource {
@@ -51,9 +51,9 @@ export interface ITaskScheduleService {
 }
 
 export interface INotificationsService {
-    saveNotification(notification: Notification): Promise<void>
-    findNextNotificationForTask(taskId: number): Promise<Notification>
-    findNotificationsByTimestamp(timestamp: Date): Promise<Notification[]>
+    saveNotification(notification: NotificationDto): Promise<void>
+    findNextNotificationForTask(taskId: number): Promise<NotificationDto>
+    findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]>
     deleteNotification(notificationId: number): Promise<void>
     updateNotificationAnswer(notificationId: number, answer: number): Promise<void>
 }

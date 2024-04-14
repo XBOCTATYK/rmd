@@ -5,11 +5,11 @@ import {EventBusService} from '../../databus/services/eventBusService';
 import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 
 export class TaskCreationHandler implements ITelegramHandler {
-  private authService: IAuthUserService;
-  private dataBusService: EventBusService<SchedulingEvents>;
+  private readonly authService: IAuthUserService;
+  private readonly dataBusService: EventBusService<SchedulingEvents>;
 
-  public name = 'task-creation';
-  public type = 'message';
+  public readonly name = 'task-creation';
+  public readonly type = 'message';
 
   constructor(authService: IAuthUserService, dataBusService: EventBusService<SchedulingEvents>) {
     this.authService = authService;
