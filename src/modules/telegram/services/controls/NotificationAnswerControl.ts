@@ -1,7 +1,5 @@
 import {Context, Markup} from 'telegraf';
 import {CallbackQuery, InlineKeyboardMarkup} from 'telegraf/src/core/types/typegram';
-import {callback} from 'telegraf/typings/button';
-import {NotificationDto} from '../../../scheduling';
 import {InvalidQueryError} from '../../exceptions';
 import {NotificationAnswer} from '../../model';
 import {ENotificationAnswerType} from '../../model/enums/ENotificationAnswerType';
@@ -35,12 +33,21 @@ const NOTIFICATION_ANSWER_MAP = {
 } as const;
 
 export class NotificationAnswerControl implements INotificationControl {
-  public getControls(notification: NotificationDto): Markup.Markup<InlineKeyboardMarkup> {
-    const message = `${notification.id}`;
+  public getControls(notificationId: number): Markup.Markup<InlineKeyboardMarkup> {
+    const message = `${notificationId}`;
     return Markup.inlineKeyboard([
-      callback(QUERY_BUTTON_DESCRIPTIONS_MAP[ETelegramQueryAnswerType.FORGOT], `${message}/${ETelegramQueryAnswerType.FORGOT}`),
-      callback(QUERY_BUTTON_DESCRIPTIONS_MAP[ETelegramQueryAnswerType.REMEMBER], `${message}/${ETelegramQueryAnswerType.REMEMBER}`),
-      callback(QUERY_BUTTON_DESCRIPTIONS_MAP[ETelegramQueryAnswerType.DONE], `${message}/${ETelegramQueryAnswerType.DONE}`),
+      Markup.button.callback(
+          QUERY_BUTTON_DESCRIPTIONS_MAP[ETelegramQueryAnswerType.FORGOT],
+          `${message}/${ETelegramQueryAnswerType.FORGOT}`
+      ),
+      Markup.button.callback(
+          QUERY_BUTTON_DESCRIPTIONS_MAP[ETelegramQueryAnswerType.REMEMBER],
+          `${message}/${ETelegramQueryAnswerType.REMEMBER}`
+      ),
+      Markup.button.callback(
+          QUERY_BUTTON_DESCRIPTIONS_MAP[ETelegramQueryAnswerType.DONE],
+          `${message}/${ETelegramQueryAnswerType.DONE}`
+      ),
     ]);
   }
 

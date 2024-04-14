@@ -15,6 +15,7 @@ export type SchedulingEvents = {
 } | {
     type: 'send-notification';
     data: {
+        notificationId: number;
         dueDate: string;
         description: string;
         publicUserId: string;

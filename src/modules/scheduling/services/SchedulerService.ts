@@ -1,8 +1,8 @@
-import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
-import {EventBusService} from '../../databus/services/eventBusService';
-import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {FULL_FORMAT} from '../../../lib/formats/formats';
+import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
+import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto} from '../model';
 
 export class SchedulerService {
@@ -50,6 +50,7 @@ export class SchedulerService {
       }
 
       await this.eventBusService.fireEvent({type: 'send-notification', data: {
+        notificationId: notification.id!,
         dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
         description: task.description,
         publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,

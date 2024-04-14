@@ -1,25 +1,25 @@
 import 'reflect-metadata';
-import {TelegramModule} from './modules/telegram/telegram.module';
+import {AuthModuleAdapter} from './adapters/authModuleAdapter/authModule.adapter';
+import {AuthModuleMigrations} from './adapters/authModuleAdapter/authModule.migrations';
+import {SchedulingModuleAdapter} from './adapters/schedulingModuleAdapter/schedulingModule.adapter';
+import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
+import {ISchedulingModuleConfig} from './modules';
+import {AuthModule} from './modules/auth/auth.module';
 import {CommonModule} from './modules/common/common.module';
+import {IDataSourceConfiguration} from './modules/common/common.types';
+import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitterEventBusAdapter';
+import {SchedulingEvents} from './modules/common/databus/schedulingMessaging.types';
 import {PinoLoggerService} from './modules/common/service/LoggerService';
 import {ConfigurationModule} from './modules/configuration/configuration.module';
-import {IDataSourceConfiguration} from './modules/common/common.types';
-import {SchedulingModule} from './modules/scheduling/scheduling.module';
-import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
-import {CommonModuleMigrations} from './modules/common/common.migrations';
-import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
 import {DataBusModule} from './modules/databus/databus.module';
-import {SchedulingEvents} from './modules/common/databus/schedulingMessaging.types';
+import {SchedulingModule} from './modules/scheduling/scheduling.module';
+import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
+import {TelegramModule} from './modules/telegram/telegram.module';
 import {ITelegramModuleConfig} from './modules/telegram/telegram.types';
-import {ISchedulingModuleConfig} from './modules';
-import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitterEventBusAdapter';
-import {AuthModule} from './modules/auth/auth.module';
-import {SchedulingModuleAdapter} from './adapters/schedulingModuleAdapter/schedulingModule.adapter';
-import {AuthModuleAdapter} from './adapters/authModuleAdapter/authModule.adapter';
 
 const moduleMigrationsList = [
   new SchedulingModuleAdapterMigrations(),
-  new CommonModuleMigrations(),
+  new AuthModuleMigrations(),
   new SchedulingModuleMigrations(),
 ];
 

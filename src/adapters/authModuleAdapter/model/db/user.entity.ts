@@ -7,7 +7,7 @@ export class UserEntity {
       userId: number | undefined,
       publicUserId: string,
       createdAt: Date = new Date(),
-      settings: UserSettingEntity[] = []
+      settings: UserSettingEntity[]
   ) {
     this.userId = userId;
     this.publicUserId = publicUserId;
@@ -19,7 +19,7 @@ export class UserEntity {
   public userId: number | undefined;
 
     @Index({unique: true})
-    @Column({name: 'public_user_id', type: 'varchar', unique: true, length: 256})
+    @Column({name: 'public_user_id', type: 'varchar', unique: true, length: 256, default: 'none'})
     public publicUserId: string;
 
     @Column({name: 'created_at', type: 'timestamp'})

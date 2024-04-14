@@ -1,11 +1,10 @@
 import {Context, Markup} from 'telegraf';
 import {InlineKeyboardMarkup} from 'telegraf/src/core/types/typegram';
-import {NotificationDto} from '../../../scheduling';
-import {NotificationAnswer} from '../../model/NotificationAnswer';
+import {NotificationAnswer} from '../../model';
 import {ITelegramControl} from '../../telegram.types';
 
-export interface INotificationControl extends ITelegramControl<NotificationDto> {
-    getControls: (notification: NotificationDto) => Markup.Markup<InlineKeyboardMarkup>
+export interface INotificationControl extends ITelegramControl<number> {
+    getControls: (notificationId: number) => Markup.Markup<InlineKeyboardMarkup>
 
     getControlsHandler: (ctx: Context) => NotificationAnswer
 }

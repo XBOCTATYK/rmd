@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import {PinoLoggerService} from './modules/common/service/LoggerService';
-import {ConfigurationModule} from './modules/configuration/configuration.module';
-import {IDataSourceConfiguration} from './modules/common/common.types';
-import {CommonModule} from './modules/common/common.module';
-import {CommonModuleMigrations} from './modules/common/common.migrations';
-import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
+import {AuthModuleMigrations} from './adapters/authModuleAdapter/authModule.migrations';
 import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
 import {evaluateModuleDataScripts} from './lib/setEntitiesToDataProvider';
+import {CommonModule} from './modules/common/common.module';
+import {IDataSourceConfiguration} from './modules/common/common.types';
+import {PinoLoggerService} from './modules/common/service/LoggerService';
+import {ConfigurationModule} from './modules/configuration/configuration.module';
+import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
 
 (async function() {
   const loggerService = new PinoLoggerService();
@@ -16,7 +16,7 @@ import {evaluateModuleDataScripts} from './lib/setEntitiesToDataProvider';
   const dbConfig = configService.get<IDataSourceConfiguration>('db');
 
   const migrations = [
-    new CommonModuleMigrations(),
+    new AuthModuleMigrations(),
     new SchedulingModuleMigrations(),
     new SchedulingModuleAdapterMigrations(),
   ];
