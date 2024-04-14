@@ -22,13 +22,17 @@ const QUERY_BUTTON_DESCRIPTIONS_MAP = {
   [ETelegramQueryAnswerType.DONE]: 'Task is done',
 } as const;
 
+const REPLIES_MAP = {
+  [ETelegramQueryAnswerType.FORGOT]: 'I will remind you one more time',
+  [ETelegramQueryAnswerType.REMEMBER]: 'Okay',
+  [ETelegramQueryAnswerType.DONE]: 'Well done!',
+} as const;
+
 const NOTIFICATION_ANSWER_MAP = {
   [ETelegramQueryAnswerType.FORGOT]: ENotificationAnswerType.FORGOT,
   [ETelegramQueryAnswerType.REMEMBER]: ENotificationAnswerType.REMEMBER,
   [ETelegramQueryAnswerType.DONE]: ENotificationAnswerType.DONE,
 } as const;
-
-type ControlNotificationAnswer = keyof typeof NOTIFICATION_ANSWER_MAP;
 
 export class NotificationAnswerControl implements INotificationControl {
   public getControls(notification: NotificationDto): Markup.Markup<InlineKeyboardMarkup> {
@@ -48,13 +52,15 @@ export class NotificationAnswerControl implements INotificationControl {
       throw new InvalidQueryError(data);
     }
 
+    ctx.reply(REPLIES_MAP[answer as ETelegramQueryAnswerType]).then();
+
     return new NotificationAnswer(
         Number(notificationId),
-        this.mapToNotificationAnswer(answer as ControlNotificationAnswer)
+        this.mapToNotificationAnswer(answer as ETelegramQueryAnswerType)
     );
   }
 
-  private mapToNotificationAnswer(string: ControlNotificationAnswer): NotificationAnswer['answer'] {
+  private mapToNotificationAnswer(string: ETelegramQueryAnswerType): NotificationAnswer['answer'] {
     return NOTIFICATION_ANSWER_MAP[string] ?? ENotificationAnswerType.NO_ANSWER;
   }
 }
