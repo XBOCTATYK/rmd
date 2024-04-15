@@ -52,6 +52,16 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
             this.notificationControl?.getControls(event.data.notificationId)
         );
       }
+
+      if (event.type === 'task-list-acquired') {
+        const allTaskInMessage = event.data.tasks.map((task) => {
+          return `Due date: ${task.dueDate} \n  ${task.description} \n  Notifications left: ${task.notificationCount}`;
+        });
+        this.telegramApiService?.getProvider().telegram.sendMessage(
+            (await this.telegramUserService!.getUserByPublicId(event.data.publicUserId)).telegramId,
+            allTaskInMessage.join('\n\n')
+        );
+      }
     });
 
     const handlers = [

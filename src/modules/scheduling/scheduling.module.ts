@@ -1,17 +1,16 @@
-import {ILoggerService} from '../common/service/service.types';
-import {TaskScheduleService} from './services/TaskScheduleService';
-import {EventBusService} from '../databus/services/eventBusService';
 import {wait} from '../../lib/wait';
+import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
+import {IAuthUserService} from '../common/common.types';
 import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
+import {ILoggerService} from '../common/service/service.types';
+import {EventBusService} from '../databus/services/eventBusService';
+import {ISchedulingModuleExport} from './exports.types';
+import {TaskListeners} from './listeners/TaskListeners';
 import {ISchedulingModuleConfig} from './scheduling.types';
-import {ISchedulingModuleExport, Task} from './exports.types';
-import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
 import {NotificationService} from './services/NotificationService';
-import {NotificationDto} from './model';
-import {ExtendedDate} from '../../lib/date-services/extended-date';
-import {IAuthUserService} from '../common/common.types';
 import {SchedulerService} from './services/SchedulerService';
+import {TaskScheduleService} from './services/TaskScheduleService';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
   private loggerService: ILoggerService;
@@ -52,25 +51,8 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
   public async initModule(config: ISchedulingModuleConfig) {
     this.loggerService.info('SchedulingModule initialized');
 
-    await this.eventBusService.addListener('scheduling', async (event) => {
-      if (event.type === 'new-task') {
-        const {description, date, time, priority = 2} = event.data;
-        const savedTask = await this.taskScheduleService?.saveTask(
-            new Task(undefined, description, 1, 0, priority, 2, new Date(date + ' ' + time))
-        );
-
-        if (savedTask) {
-          await this.notificationService.saveNotification(
-              new NotificationDto(
-                  undefined,
-                  ExtendedDate.of(new Date()).addHours(2).get(),
-                  0,
-                  savedTask.id!
-              )
-          );
-        }
-      }
-    });
+    new TaskListeners(this.eventBusService, this.taskScheduleService!, this.notificationService, this.authService);
+    await this.schedulerService.start();
 
     await this.helloCheck();
     return this;
