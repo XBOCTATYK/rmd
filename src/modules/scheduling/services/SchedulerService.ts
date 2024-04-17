@@ -29,8 +29,9 @@ export class SchedulerService {
           ExtendedDate.of(new Date()).roundToMinutes().get()
       );
 
+      console.log(notifications);
       await Promise.all(notifications.map(this.processNotification.bind(this)));
-    }, 60000);
+    }, 10000);
   }
 
   private async processNotification(notification: NotificationDto) {
@@ -44,17 +45,22 @@ export class SchedulerService {
       } else {
         const nextNotificationTime = ExtendedDate.of(notification.timestamp).addHours(2).get();
         await this.notificationService.saveNotification(
-            new NotificationDto(undefined, nextNotificationTime, notification.taskId, 0)
+            new NotificationDto(undefined, nextNotificationTime, 0, notification.taskId)
         );
         await this.taskScheduleService.updateNotificationCount(task.id!, nextNotificationCount);
       }
 
-      await this.eventBusService.fireEvent({type: 'send-notification', data: {
-        notificationId: notification.id!,
-        dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
-        description: task.description,
-        publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,
-      }});
+      await this.eventBusService.fireEvent({
+        type: 'send-notification',
+        data: {
+          notificationId: notification.id!,
+          dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
+          description: task.description,
+        },
+        metadata: {
+          publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,
+        },
+      });
     }
   }
 }

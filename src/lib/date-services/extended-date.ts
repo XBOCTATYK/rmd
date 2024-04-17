@@ -1,22 +1,22 @@
-import addMilliseconds from 'date-fns/addMilliseconds';
-import addSeconds from 'date-fns/addSeconds';
-import addMinutes from 'date-fns/addMinutes';
-import addHours from 'date-fns/addHours';
 import addDays from 'date-fns/addDays';
+import addHours from 'date-fns/addHours';
+import addMilliseconds from 'date-fns/addMilliseconds';
+import addMinutes from 'date-fns/addMinutes';
 import addMonths from 'date-fns/addMonths';
+import addSeconds from 'date-fns/addSeconds';
 import addYears from 'date-fns/addYears';
-import format from 'date-fns/format';
-import parse from 'date-fns/parse';
-import startOfDay from 'date-fns/startOfDay';
 import closest from 'date-fns/closestTo';
-import isBefore from 'date-fns/isBefore';
+import format from 'date-fns/format';
 import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import parse from 'date-fns/parse';
 import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
+import startOfDay from 'date-fns/startOfDay';
 
 import {DATE_FNS_OPTIONS, DATE_FORMAT, DateFnsOptions} from '../formats/formats';
-import {IExtendedDate} from './extended-date.interface';
-import {Difference} from './difference';
 import {DateTypes} from './date-services.types';
+import {Difference} from './difference';
+import {IExtendedDate} from './extended-date.interface';
 
 /**
  * Расширенный класс для работы с датами. Связка date-fns с приложением.
@@ -151,7 +151,6 @@ export class Time extends ExtendedDate {
   static of(date: DateTypes): ExtendedDate {
     const clearedTime = this.clearDate(date);
 
-    console.log(clearedTime);
     return super.of(clearedTime, 'HH:mm');
   }
 

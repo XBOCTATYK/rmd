@@ -6,5 +6,5 @@ import {ITelegramControl} from '../../telegram.types';
 export interface INotificationControl extends ITelegramControl<number> {
     getControls: (notificationId: number) => Markup.Markup<InlineKeyboardMarkup>
 
-    getControlsHandler: (ctx: Context) => NotificationAnswer
+    handleControl: (ctx: Context) => NotificationAnswer
 }

@@ -1,5 +1,5 @@
-import {UserEntity} from '../db/user.entity';
 import {User} from '../../../..';
+import {UserEntity} from '../db/user.entity';
 import {UserSettingMapper} from './UserSettingMapper';
 
 export class UserMapper {
@@ -23,7 +23,7 @@ export class UserMapper {
       publicUserId: user.publicUserId,
       createdAt: user.createdAt,
       settings: new Map(
-          user.settings.map((setting) => UserSettingMapper.toDto(setting))
+          user.settings?.map((setting) => UserSettingMapper.toDto(setting)) ?? []
       ),
     };
   }

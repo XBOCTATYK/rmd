@@ -1,35 +1,40 @@
 import {Context} from 'telegraf';
-import {IAuthUserService} from '../../common/common.types';
-import {ITelegramHandler} from '../services/service.types';
-import {EventBusService} from '../../databus/services/eventBusService';
 import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {EventBusService} from '../../databus/services/eventBusService';
+import {ITelegramHandler} from '../services/service.types';
+import {ITelegramUserService} from '../telegram.types';
 
 export class TaskCreationHandler implements ITelegramHandler {
-  private readonly authService: IAuthUserService;
+  private readonly telegramUserService: ITelegramUserService;
   private readonly dataBusService: EventBusService<SchedulingEvents>;
 
   public readonly name = 'task-creation';
   public readonly type = 'message';
 
-  constructor(authService: IAuthUserService, dataBusService: EventBusService<SchedulingEvents>) {
-    this.authService = authService;
+  constructor(authService: ITelegramUserService, dataBusService: EventBusService<SchedulingEvents>) {
+    this.telegramUserService = authService;
     this.dataBusService = dataBusService;
   }
 
   public handle = async (ctx: Context) => {
-    if (await this.authService.checkPermission('create-task', String(ctx.from?.id))) {
-      const text = ctx?.text ?? '';
-      const [description, date, time, priority] = text?.split('\n') ?? ['', '', '', ''];
+    const text = ctx?.text ?? '';
+    const [description, date, time, priority] = text?.split('\n') ?? ['', '', '', ''];
 
-      const task = {
-        date,
-        time,
-        description,
-        priority: Number(priority),
-        repeat: undefined,
-      };
+    const task = {
+      date,
+      time,
+      description,
+      priority: Number(priority),
+      repeat: undefined,
+    };
 
-      await this.dataBusService.fireEvent({type: 'new-task', data: task});
-    }
+    const publicUserId = (await this.telegramUserService.getUserByTelegramId(Number(ctx.from?.id))).publicUserId;
+    await this.dataBusService.fireEvent({
+      type: 'new-task',
+      data: task,
+      metadata: {
+        publicUserId,
+      },
+    });
   };
 }

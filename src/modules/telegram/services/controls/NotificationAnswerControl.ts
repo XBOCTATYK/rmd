@@ -51,7 +51,7 @@ export class NotificationAnswerControl implements INotificationControl {
     ]);
   }
 
-  public getControlsHandler(ctx: Context): NotificationAnswer {
+  public handleControl(ctx: Context): NotificationAnswer {
     const data = (ctx.callbackQuery as CallbackQuery.DataQuery)?.data?.split('/') ?? [];
     const [notificationId, answer] = data;
 

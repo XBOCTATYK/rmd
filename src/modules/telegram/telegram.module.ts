@@ -4,6 +4,7 @@ import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 import {ILoggerService} from '../common/service/service.types';
 import {EventBusService} from '../databus/services/eventBusService';
 import {HelloHandler} from './handlers/HelloHandler';
+import {NotificationAnswerHandler} from './handlers/NotificationAnswerHandler';
 import {TaskCreationHandler} from './handlers/TaskCreationHandler';
 import {NotificationAnswerControl} from './services/controls/NotificationAnswerControl';
 import {ITelegramApiService} from './services/service.types';
@@ -17,7 +18,7 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
   private readonly authService: IAuthUserService;
   private telegramApiService?: ITelegramApiService;
   private telegramUserService?: TelegramUserService;
-  private notificationControl?: NotificationAnswerControl;
+  private readonly notificationControl?: NotificationAnswerControl;
 
   constructor(
       loggerService: ILoggerService,
@@ -29,6 +30,7 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
     this.loggerService = loggerService;
     this.dataBusService = dataBusService;
     this.authService = authService;
+    this.notificationControl = new NotificationAnswerControl();
   }
 
   protected async initModule(config: ITelegramModuleConfig) {
@@ -37,7 +39,6 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
         config.publicUserHashSecret,
         config.iv
     );
-    this.notificationControl = new NotificationAnswerControl();
 
     this.loggerService.info('TelegramModule initialized');
     await this.dataBusService.addListener('telegram', async (event) => {
@@ -47,7 +48,7 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
 
       if (event.type === 'send-notification') {
         this.telegramApiService?.getProvider().telegram.sendMessage(
-            (await this.telegramUserService!.getUserByPublicId(event.data.publicUserId)).telegramId,
+            (await this.telegramUserService!.getUserByPublicId(event.metadata.publicUserId)).telegramId,
             event.data.description + '\n' + event.data.dueDate,
             this.notificationControl?.getControls(event.data.notificationId)
         );
@@ -58,7 +59,7 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
           return `Due date: ${task.dueDate} \n  ${task.description} \n  Notifications left: ${task.notificationCount}`;
         });
         this.telegramApiService?.getProvider().telegram.sendMessage(
-            (await this.telegramUserService!.getUserByPublicId(event.data.publicUserId)).telegramId,
+            (await this.telegramUserService!.getUserByPublicId(event.metadata.publicUserId)).telegramId,
             allTaskInMessage.join('\n\n')
         );
       }
@@ -66,7 +67,8 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
 
     const handlers = [
       new HelloHandler(),
-      new TaskCreationHandler(this.authService, this.dataBusService),
+      new TaskCreationHandler(this.telegramUserService, this.dataBusService),
+      new NotificationAnswerHandler(this.dataBusService, this.notificationControl!),
     ];
 
     for (const handler of handlers) {

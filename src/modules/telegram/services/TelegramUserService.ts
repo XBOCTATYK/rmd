@@ -1,6 +1,6 @@
-import {ITelegramUserService} from '../telegram.types';
-import {TelegramUser} from '../model/TelegramUser';
 import {createCipheriv, createDecipheriv} from 'crypto';
+import {TelegramUser} from '../model';
+import {ITelegramUserService} from '../telegram.types';
 
 export class TelegramUserService implements ITelegramUserService {
   private readonly secretHash: string;

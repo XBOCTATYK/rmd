@@ -6,6 +6,9 @@ export type NewTaskEvent = {
         description: string;
         priority?: number;
         repeat?: string;
+    },
+    metadata: {
+        publicUserId: string
     }
 }
 
@@ -15,7 +18,9 @@ export type SendNotificationEvent = {
         notificationId: number;
         dueDate: string;
         description: string;
-        publicUserId: string;
+    },
+    metadata: {
+        publicUserId: string
     }
 }
 
@@ -28,7 +33,8 @@ export type HelloEvent = {
 
 export type TaskListRequestEvent = {
     type: 'task-list-request';
-    data: {
+    data: {},
+    metadata: {
         publicUserId: string
     }
 }
@@ -41,8 +47,18 @@ export type TaskListAcquiredEvent = {
             description: string,
             notificationCount: number
         }>,
-        publicUserId: string
     },
+    metadata: {
+        publicUserId: string
+    }
+}
+
+export type SendNotificationAnswerEvent = {
+    type: 'notification-answer';
+    data: {
+        notificationId: number;
+        answer: number;
+    }
 }
 
 
@@ -51,4 +67,5 @@ export type SchedulingEvents =
     SendNotificationEvent |
     TaskListRequestEvent |
     TaskListAcquiredEvent |
+    SendNotificationAnswerEvent |
     HelloEvent;
