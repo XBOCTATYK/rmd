@@ -1,7 +1,7 @@
-import differenceInMinutes from 'date-fns/differenceInMinutes';
 import addMinutes from 'date-fns/addMinutes';
-import startOfDay from 'date-fns/startOfDay';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
 import format from 'date-fns/format';
+import startOfDay from 'date-fns/startOfDay';
 import {DATE_FNS_OPTIONS, DATE_FORMAT} from './formats/formats';
 
 const MINS_IN_DAY = 1440;
@@ -66,10 +66,10 @@ function notifyTimesInNearDayWithWorkingHours(notifyTimes: Date[], from: Date, t
 
 export function getNextNotifyTime(
     user: { startTime: Date, endTime: Date },
-    task: { date: Date, notificationsNeed: number, notificationsDone: number }
+    task: { dueDate: Date, notificationsNeed: number }
 ): Date {
   const dateNow = new Date();
-  const nextNotificationsTimes = notifyTimes(dateNow, task.date, task.notificationsNeed).slice(task.notificationsDone);
+  const nextNotificationsTimes = notifyTimes(dateNow, task.dueDate, task.notificationsNeed);
   console.log(nextNotificationsTimes);
 
   return notifyTimesInNearDayWithWorkingHours(nextNotificationsTimes, user.startTime, user.endTime)[0];

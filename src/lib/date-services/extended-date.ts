@@ -55,7 +55,7 @@ export class ExtendedDate implements IExtendedDate {
     this.options = options;
   }
 
-  private static parse(value: string, format: string = DATE_FORMAT, options: DateFnsOptions) {
+  static parse(value: string, format: string = DATE_FORMAT, options: DateFnsOptions = DATE_FNS_OPTIONS) {
     return parse(value, format, 0, options);
   }
 

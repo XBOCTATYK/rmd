@@ -15,7 +15,6 @@ export class TaskListHandler implements ITelegramHandler {
 
   public handle = async (ctx: Context) => {
     const text = ctx?.text ?? '';
-    console.log(text);
 
     if (text.toLowerCase() !== 'list') {
       return;

@@ -1,5 +1,6 @@
+import {getNextNotifyTime} from '../../../lib/calculateTime';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
-import {FULL_FORMAT} from '../../../lib/formats/formats';
+import {FULL_FORMAT, TIME_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
@@ -42,7 +43,10 @@ export class SchedulerService {
       if (nextNotificationCount < 0) {
         await this.taskScheduleService.updateTaskStatus(task.id!, 4);
       } else {
-        const nextNotificationTime = ExtendedDate.of(notification.timestamp).addHours(2).get();
+        const nextNotificationTime = getNextNotifyTime(
+            {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:00', TIME_FORMAT)},
+            {dueDate: task.dueDate, notificationsNeed: nextNotificationCount}
+        );
         await this.notificationService.saveNotification(
             new NotificationDto(undefined, nextNotificationTime, 0, notification.taskId)
         );
