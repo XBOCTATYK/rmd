@@ -18,7 +18,11 @@ export class TaskCreationHandler implements ITelegramHandler {
 
   public handle = async (ctx: Context) => {
     const text = ctx?.text ?? '';
-    const [description, date, time, priority] = text?.split('\n') ?? ['', '', '', ''];
+    const [type, description, date, time, priority] = text?.split('\n') ?? ['', '', '', '', ''];
+
+    if (type.toLowerCase() !== 'task') {
+      return;
+    }
 
     const task = {
       date,

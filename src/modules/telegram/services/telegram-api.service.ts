@@ -1,10 +1,11 @@
-import {Telegraf} from 'telegraf';
-import {ITelegramApiService, ITelegramHandler, TelegramHandlerCallback} from './service.types';
+import {Context, Telegraf} from 'telegraf';
 import {message} from 'telegraf/filters';
+import {ITelegramApiService, ITelegramHandler, TelegramHandlerCallback} from './service.types';
 
 export class TelegramApiService implements ITelegramApiService {
   private readonly telegraf: Telegraf;
   private readonly callbackHandlers: TelegramHandlerCallback[] = [];
+  private readonly messageHandlers: TelegramHandlerCallback[] = [];
 
   constructor(token: string) {
     this.telegraf = new Telegraf(token);
@@ -21,7 +22,7 @@ export class TelegramApiService implements ITelegramApiService {
     }
 
     if (type === 'message') {
-      this.telegraf.on(message('text'), handle);
+      this.messageHandlers.push(handle);
       return;
     }
 
@@ -34,9 +35,18 @@ export class TelegramApiService implements ITelegramApiService {
   }
 
   public async start() {
+    this.telegraf.on(message('text'), this.getMainHandler());
     this.startCallbackHandlers();
 
     await this.telegraf.launch();
+  }
+
+  public getMainHandler() {
+    return async (ctx: Context) => {
+      this.messageHandlers.map((handler) => {
+        handler(ctx).then((r) => r);
+      });
+    };
   }
 
   private startCallbackHandlers() {

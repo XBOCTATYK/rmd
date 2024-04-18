@@ -6,6 +6,10 @@ import {EventBusService} from '../databus/services/eventBusService';
 import {HelloHandler} from './handlers/HelloHandler';
 import {NotificationAnswerHandler} from './handlers/NotificationAnswerHandler';
 import {TaskCreationHandler} from './handlers/TaskCreationHandler';
+import {TaskListHandler} from './handlers/TaskListHandler';
+import {helloListener} from './listeners/helloListener';
+import {sendNotificationListener} from './listeners/sendNotificationListener';
+import {taskListAcquiredListener} from './listeners/taskListAcquiredListener';
 import {NotificationAnswerControl} from './services/controls/NotificationAnswerControl';
 import {ITelegramApiService} from './services/service.types';
 import {TelegramApiService} from './services/telegram-api.service';
@@ -18,7 +22,7 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
   private readonly authService: IAuthUserService;
   private telegramApiService?: ITelegramApiService;
   private telegramUserService?: TelegramUserService;
-  private readonly notificationControl?: NotificationAnswerControl;
+  private readonly notificationControl: NotificationAnswerControl;
 
   constructor(
       loggerService: ILoggerService,
@@ -40,42 +44,11 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
         config.iv
     );
 
-    this.loggerService.info('TelegramModule initialized');
-    await this.dataBusService.addListener('telegram', async (event) => {
-      if (event.type === 'hello') {
-        console.log(event.data.message);
-      }
-
-      if (event.type === 'send-notification') {
-        this.telegramApiService?.getProvider().telegram.sendMessage(
-            (await this.telegramUserService!.getUserByPublicId(event.metadata.publicUserId)).telegramId,
-            event.data.description + '\n' + event.data.dueDate,
-            this.notificationControl?.getControls(event.data.notificationId)
-        );
-      }
-
-      if (event.type === 'task-list-acquired') {
-        const allTaskInMessage = event.data.tasks.map((task) => {
-          return `Due date: ${task.dueDate} \n  ${task.description} \n  Notifications left: ${task.notificationCount}`;
-        });
-        this.telegramApiService?.getProvider().telegram.sendMessage(
-            (await this.telegramUserService!.getUserByPublicId(event.metadata.publicUserId)).telegramId,
-            allTaskInMessage.join('\n\n')
-        );
-      }
-    });
-
-    const handlers = [
-      new HelloHandler(),
-      new TaskCreationHandler(this.telegramUserService, this.dataBusService),
-      new NotificationAnswerHandler(this.dataBusService, this.notificationControl!),
-    ];
-
-    for (const handler of handlers) {
-      this.telegramApiService.addHandler(handler);
-    }
-
+    await this.initListeners();
+    await this.initHandlers();
     await this.telegramApiService.start();
+
+    this.loggerService.info('TelegramModule initialized');
 
     return this;
   }
@@ -88,5 +61,30 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
     return {
       telegramApiService: this.telegramApiService!,
     };
+  }
+
+  private async initListeners() {
+    const listeners = [
+      sendNotificationListener(this.telegramUserService!, this.telegramApiService!, this.notificationControl),
+      taskListAcquiredListener(this.telegramUserService!, this.telegramApiService!),
+      helloListener(),
+    ];
+
+    await this.dataBusService.addListener('telegram', async (event) => {
+      await Promise.all(listeners.map((listener) => listener(event)));
+    });
+  }
+
+  private async initHandlers() {
+    const handlers = [
+      new HelloHandler(),
+      new TaskCreationHandler(this.telegramUserService!, this.dataBusService),
+      new NotificationAnswerHandler(this.dataBusService, this.notificationControl!),
+      new TaskListHandler(this.telegramUserService!, this.dataBusService),
+    ];
+
+    for (const handler of handlers) {
+      this.telegramApiService!.addHandler(handler);
+    }
   }
 }

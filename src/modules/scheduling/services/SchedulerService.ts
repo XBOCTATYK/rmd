@@ -29,9 +29,8 @@ export class SchedulerService {
           ExtendedDate.of(new Date()).roundToMinutes().get()
       );
 
-      console.log(notifications);
       await Promise.all(notifications.map(this.processNotification.bind(this)));
-    }, 10000);
+    }, 60000);
   }
 
   private async processNotification(notification: NotificationDto) {
