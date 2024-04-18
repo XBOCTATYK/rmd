@@ -20,9 +20,12 @@ export class TaskListeners {
     this.taskScheduleService = taskScheduleService;
     this.notificationService = notificationService;
     this.userService = userService;
-    this.runNewTaskListener();
-    this.runTaskListAcquiredListener();
-    this.runNotificationAnswerListener();
+
+    Promise.all([
+      this.runNewTaskListener(),
+      this.runTaskListAcquiredListener(),
+      this.runNotificationAnswerListener(),
+    ]);
   }
 
   private async runNewTaskListener() {
