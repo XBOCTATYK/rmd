@@ -39,7 +39,7 @@ export class SchedulerService {
     if (task) {
       const nextNotificationCount = task.notificationsCount - 1;
 
-      if (nextNotificationCount < 1) {
+      if (nextNotificationCount < 0) {
         await this.taskScheduleService.updateTaskStatus(task.id!, 4);
       } else {
         const nextNotificationTime = ExtendedDate.of(notification.timestamp).addHours(2).get();
