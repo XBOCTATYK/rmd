@@ -40,13 +40,21 @@ export class TaskListeners {
         }
 
         const savedTask = await this.taskScheduleService?.saveTask(
-            new Task(undefined, description, user.userId, 0, priority, 2, new Date(date + ' ' + time))
+            new Task(
+                undefined,
+                description,
+                user.userId,
+                0,
+                priority,
+                2,
+                ExtendedDate.of(new Date(date + ' ' + time)).roundToMinutes().get()
+            )
         );
 
         await this.notificationService.saveNotification(
             new NotificationDto(
                 undefined,
-                ExtendedDate.of(new Date()).addHours(2).get(),
+                ExtendedDate.of(new Date()).addHours(2).roundToMinutes().get(),
                 0,
                   savedTask.id!
             )
