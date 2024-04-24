@@ -1,6 +1,6 @@
 import {DataSource} from 'typeorm';
-import {NotificationDto, Task} from '../scheduling';
 import {User} from '../auth';
+import {NotificationDto, Task} from '../scheduling';
 
 export interface IDataSource {
     openSession(): void
@@ -37,6 +37,7 @@ export interface IAuthUserService {
     findUserByPublicId(publicUserId: string): Promise<User | null>
     findUserByUserId(userId: number): Promise<User>
     updateUser(user: User): Promise<void>
+    updateUserSettings(userId: number, settings: Map<string, any>): Promise<void>
 }
 
 export interface ITaskScheduleService {
