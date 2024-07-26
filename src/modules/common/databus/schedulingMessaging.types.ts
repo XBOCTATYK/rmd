@@ -1,5 +1,15 @@
+export enum ESchedulingEventsType {
+  NEW_TASK = 'new-task',
+  SEND_NOTIFICATION = 'send-notification',
+  HELLO = 'hello',
+  TASK_LIST_REQUEST = 'task-list-request',
+  TASK_LIST_ACQUIRED = 'task-list-acquired',
+  NOTIFICATION_ANSWER = 'notification-answer',
+  TASK_CREATED = 'task-created',
+}
+
 export type NewTaskEvent = {
-    type: 'new-task';
+    type: ESchedulingEventsType.NEW_TASK;
     data: {
         date: string;
         time: string;
@@ -13,11 +23,12 @@ export type NewTaskEvent = {
 }
 
 export type SendNotificationEvent = {
-    type: 'send-notification';
+    type: ESchedulingEventsType.SEND_NOTIFICATION;
     data: {
         notificationId: number;
         dueDate: string;
         description: string;
+        nextNotificationDate?: string;
     },
     metadata: {
         publicUserId: string
@@ -25,14 +36,14 @@ export type SendNotificationEvent = {
 }
 
 export type HelloEvent = {
-    type: 'hello';
+    type: ESchedulingEventsType.HELLO;
     data: {
         message: string
     }
 }
 
 export type TaskListRequestEvent = {
-    type: 'task-list-request';
+    type: ESchedulingEventsType.TASK_LIST_REQUEST;
     data: {},
     metadata: {
         publicUserId: string
@@ -40,7 +51,7 @@ export type TaskListRequestEvent = {
 }
 
 export type TaskListAcquiredEvent = {
-    type: 'task-list-acquired';
+    type: ESchedulingEventsType.TASK_LIST_ACQUIRED;
     data: {
         tasks: Array<{
             dueDate: string,
@@ -54,13 +65,24 @@ export type TaskListAcquiredEvent = {
 }
 
 export type SendNotificationAnswerEvent = {
-    type: 'notification-answer';
+    type: ESchedulingEventsType.NOTIFICATION_ANSWER;
     data: {
         notificationId: number;
         answer: number;
     }
 }
 
+export type TaskCreatedEvent = {
+    type: ESchedulingEventsType.TASK_CREATED;
+    data: {
+        description: string,
+        dueDate: string,
+        firsNotificationDate: string
+    },
+    metadata: {
+        publicUserId: string
+    }
+}
 
 export type SchedulingEvents =
     NewTaskEvent |
@@ -68,4 +90,5 @@ export type SchedulingEvents =
     TaskListRequestEvent |
     TaskListAcquiredEvent |
     SendNotificationAnswerEvent |
-    HelloEvent;
+    HelloEvent |
+    TaskCreatedEvent;

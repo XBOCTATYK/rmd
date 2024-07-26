@@ -1,7 +1,7 @@
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
 import {FULL_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
-import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto, Task} from '../model';
 
@@ -30,7 +30,7 @@ export class TaskListeners {
 
   private async runNewTaskListener() {
     await this.eventBusService.addListener('scheduling', async (event) => {
-      if (event.type === 'new-task') {
+      if (event.type === ESchedulingEventsType.NEW_TASK) {
         const {description, date, time, priority = 2} = event.data;
         const {publicUserId} = event.metadata ?? {};
         const user = await this.userService?.findUserByPublicId(publicUserId);
@@ -51,21 +51,33 @@ export class TaskListeners {
             )
         );
 
+        const nextNotificationTime = ExtendedDate.of(new Date()).addHours(2).roundToMinutes();
+
         await this.notificationService.saveNotification(
             new NotificationDto(
                 undefined,
-                ExtendedDate.of(new Date()).addHours(2).roundToMinutes().get(),
+                nextNotificationTime.get(),
                 0,
-                  savedTask.id!
+                savedTask.id!
             )
         );
+
+        await this.eventBusService.fireEvent({
+          type: ESchedulingEventsType.TASK_CREATED,
+          data: {
+            description: savedTask.description,
+            dueDate: ExtendedDate.of(savedTask.dueDate).format(FULL_FORMAT),
+            firsNotificationDate: nextNotificationTime.format(FULL_FORMAT),
+          },
+          metadata: {publicUserId},
+        });
       }
     });
   }
 
   private async runTaskListAcquiredListener() {
     await this.eventBusService.addListener('scheduling', async (event) => {
-      if (event.type === 'task-list-request') {
+      if (event.type === ESchedulingEventsType.TASK_LIST_REQUEST) {
         const publicUserId = event.metadata?.publicUserId;
         const user = await this.userService?.findUserByPublicId(publicUserId);
 
@@ -82,7 +94,7 @@ export class TaskListeners {
           };
         });
         await this.eventBusService.fireEvent({
-          type: 'task-list-acquired',
+          type: ESchedulingEventsType.TASK_LIST_ACQUIRED,
           data: {tasks: tasksForEvent},
           metadata: {publicUserId},
         });
@@ -92,7 +104,7 @@ export class TaskListeners {
 
   private async runNotificationAnswerListener() {
     await this.eventBusService.addListener('scheduling', async (event) => {
-      if (event.type === 'notification-answer') {
+      if (event.type === ESchedulingEventsType.NOTIFICATION_ANSWER) {
         const {notificationId, answer} = event.data;
         await this.notificationService.updateNotificationAnswer(notificationId, answer);
       }

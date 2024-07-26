@@ -1,4 +1,4 @@
-import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {ITelegramApiService} from '../services/service.types';
 import {ITelegramUserService} from '../telegram.types';
 
@@ -7,7 +7,7 @@ export function taskListAcquiredListener(
     telegramApiService: ITelegramApiService,
 ) {
   return async function(event: SchedulingEvents) {
-    if (event.type === 'task-list-acquired') {
+    if (event.type === ESchedulingEventsType.TASK_LIST_ACQUIRED) {
       const allTaskInMessage = event.data.tasks.map((task) => {
         return `${task.description} \nDue date: ${task.dueDate} \nNotifications left: ${task.notificationCount}`;
       });

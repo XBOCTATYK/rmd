@@ -2,7 +2,7 @@ import {getNextNotifyTime} from '../../../lib/calculateTime';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
 import {FULL_FORMAT, TIME_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
-import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto} from '../model';
 
@@ -39,11 +39,12 @@ export class SchedulerService {
 
     if (task) {
       const nextNotificationCount = task.notificationsCount - 1;
+      let nextNotificationTime;
 
       if (nextNotificationCount < 0) {
         await this.taskScheduleService.updateTaskStatus(task.id!, 4);
       } else {
-        const nextNotificationTime = getNextNotifyTime(
+        nextNotificationTime = getNextNotifyTime(
             {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:00', TIME_FORMAT)},
             {dueDate: task.dueDate, notificationsNeed: nextNotificationCount}
         );
@@ -54,11 +55,12 @@ export class SchedulerService {
       }
 
       await this.eventBusService.fireEvent({
-        type: 'send-notification',
+        type: ESchedulingEventsType.SEND_NOTIFICATION,
         data: {
           notificationId: notification.id!,
           dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
           description: task.description,
+          nextNotificationDate: nextNotificationTime && ExtendedDate.of(nextNotificationTime).format(FULL_FORMAT),
         },
         metadata: {
           publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,

@@ -1,5 +1,5 @@
 import {Context} from 'telegraf';
-import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {ITelegramHandler} from '../services/service.types';
 import {ITelegramUserService} from '../telegram.types';
@@ -10,6 +10,8 @@ export class TaskCreationHandler implements ITelegramHandler {
 
   public readonly name = 'task-creation';
   public readonly type = 'message';
+
+  public static readonly DEFAULT_PRIORITY = 2;
 
   constructor(authService: ITelegramUserService, dataBusService: EventBusService<SchedulingEvents>) {
     this.telegramUserService = authService;
@@ -28,13 +30,13 @@ export class TaskCreationHandler implements ITelegramHandler {
       date,
       time,
       description,
-      priority: Number(priority),
+      priority: Number(priority || TaskCreationHandler.DEFAULT_PRIORITY),
       repeat: undefined,
     };
 
     const publicUserId = (await this.telegramUserService.getUserByTelegramId(Number(ctx.from?.id))).publicUserId;
     await this.dataBusService.fireEvent({
-      type: 'new-task',
+      type: ESchedulingEventsType.NEW_TASK,
       data: task,
       metadata: {
         publicUserId,

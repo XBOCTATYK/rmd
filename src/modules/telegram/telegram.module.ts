@@ -9,6 +9,7 @@ import {TaskCreationHandler} from './handlers/TaskCreationHandler';
 import {TaskListHandler} from './handlers/TaskListHandler';
 import {helloListener} from './listeners/helloListener';
 import {sendNotificationListener} from './listeners/sendNotificationListener';
+import {taskCreatedListener} from './listeners/taskCreatedListener';
 import {taskListAcquiredListener} from './listeners/taskListAcquiredListener';
 import {NotificationAnswerControl} from './services/controls/NotificationAnswerControl';
 import {ITelegramApiService} from './services/service.types';
@@ -67,6 +68,7 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
     const listeners = [
       sendNotificationListener(this.telegramUserService!, this.telegramApiService!, this.notificationControl),
       taskListAcquiredListener(this.telegramUserService!, this.telegramApiService!),
+      taskCreatedListener(this.telegramUserService!, this.telegramApiService!),
       helloListener(),
     ];
 

@@ -1,5 +1,5 @@
 import {Context} from 'telegraf';
-import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {ITelegramHandler, TelegramHandlerType} from '../services/service.types';
 import {ITelegramUserService} from '../telegram.types';
@@ -23,7 +23,7 @@ export class TaskListHandler implements ITelegramHandler {
     const publicUserId = (await this.telegramUserService!.getUserByTelegramId(Number(ctx.from?.id))).publicUserId;
 
     await this.dataBusService!.fireEvent({
-      type: 'task-list-request',
+      type: ESchedulingEventsType.TASK_LIST_REQUEST,
       data: {},
       metadata: {
         publicUserId,

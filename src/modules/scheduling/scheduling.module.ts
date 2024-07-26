@@ -1,7 +1,7 @@
 import {wait} from '../../lib/wait';
 import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
 import {IAuthUserService} from '../common/common.types';
-import {SchedulingEvents} from '../common/databus/schedulingMessaging.types';
+import {ESchedulingEventsType, SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 import {ILoggerService} from '../common/service/service.types';
 import {EventBusService} from '../databus/services/eventBusService';
@@ -13,12 +13,12 @@ import {SchedulerService} from './services/SchedulerService';
 import {TaskScheduleService} from './services/TaskScheduleService';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
-  private loggerService: ILoggerService;
-  private eventBusService: EventBusService<SchedulingEvents>;
+  private readonly loggerService: ILoggerService;
+  private readonly eventBusService: EventBusService<SchedulingEvents>;
   private readonly taskScheduleService?: TaskScheduleService;
-  private notificationService: NotificationService;
-  private authService: IAuthUserService;
-  private schedulerService: SchedulerService;
+  private readonly notificationService: NotificationService;
+  private readonly authService: IAuthUserService;
+  private readonly schedulerService: SchedulerService;
 
   constructor(
       loggerService: ILoggerService,
@@ -60,7 +60,7 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
 
   public async helloCheck() {
     await wait(2000);
-    await this.eventBusService.fireEvent({type: 'hello', data: {message: 'hello'}});
+    await this.eventBusService.fireEvent({type: ESchedulingEventsType.HELLO, data: {message: 'hello'}});
   }
   public buildExports() {
     return {

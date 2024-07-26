@@ -1,5 +1,5 @@
 import {Context} from 'telegraf';
-import {SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationAnswerControl} from '../services/controls/NotificationAnswerControl';
 import {ITelegramHandler, TelegramHandlerType} from '../services/service.types';
@@ -18,6 +18,9 @@ export class NotificationAnswerHandler implements ITelegramHandler {
   public handle = async (ctx: Context): Promise<void> => {
     const {notificationId = 0, answer} = await this.notificationAnswerControl.handleControl(ctx);
 
-    await this.eventBusService.fireEvent({type: 'notification-answer', data: {notificationId, answer}});
+    await this.eventBusService.fireEvent({
+      type: ESchedulingEventsType.NOTIFICATION_ANSWER,
+      data: {notificationId, answer},
+    });
   };
 }
