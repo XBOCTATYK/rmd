@@ -13,7 +13,7 @@ import parse from 'date-fns/parse';
 import roundToNearestMinutes from 'date-fns/roundToNearestMinutes';
 import startOfDay from 'date-fns/startOfDay';
 
-import {DATE_FNS_OPTIONS, DATE_FORMAT, DateFnsOptions} from '../formats/formats';
+import {DATE_FNS_OPTIONS, DATE_FORMAT} from '../formats/formats';
 import {DateTypes} from './date-services.types';
 import {Difference} from './difference';
 import {IExtendedDate} from './extended-date.interface';
@@ -23,7 +23,7 @@ import {IExtendedDate} from './extended-date.interface';
  */
 export class ExtendedDate implements IExtendedDate {
   value: Date;
-  options: DateFnsOptions = DATE_FNS_OPTIONS;
+  options = DATE_FNS_OPTIONS;
   formatting: string | undefined;
 
   static of(date: DateTypes, format?: string, options = DATE_FNS_OPTIONS): ExtendedDate {
@@ -44,7 +44,7 @@ export class ExtendedDate implements IExtendedDate {
     return newDate;
   }
 
-  constructor(date: DateTypes, format?: string, options: DateFnsOptions = DATE_FNS_OPTIONS) {
+  constructor(date: DateTypes, format?: string, options = DATE_FNS_OPTIONS) {
     if (typeof date === 'string') {
       this.value = ExtendedDate.parse(date, format, options);
     } else {
@@ -55,7 +55,7 @@ export class ExtendedDate implements IExtendedDate {
     this.options = options;
   }
 
-  static parse(value: string, format: string = DATE_FORMAT, options: DateFnsOptions = DATE_FNS_OPTIONS) {
+  static parse(value: string, format: string = DATE_FORMAT, options = DATE_FNS_OPTIONS) {
     return parse(value, format, 0, options);
   }
 

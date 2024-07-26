@@ -1,3 +1,4 @@
+import {isSameDay, setDefaultOptions} from 'date-fns';
 import addMinutes from 'date-fns/addMinutes';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import format from 'date-fns/format';
@@ -5,6 +6,7 @@ import startOfDay from 'date-fns/startOfDay';
 import {DATE_FNS_OPTIONS, DATE_FORMAT} from './formats/formats';
 
 const MINS_IN_DAY = 1440;
+setDefaultOptions(DATE_FNS_OPTIONS);
 
 function getRange(fromTime: Date, toTime: Date): { fromInMinutes: number, toInMinutes: number } {
   const fromInMinutes = differenceInMinutes(fromTime, startOfDay(fromTime));
@@ -13,12 +15,17 @@ function getRange(fromTime: Date, toTime: Date): { fromInMinutes: number, toInMi
   return {fromInMinutes, toInMinutes};
 }
 
+function getTaskToday(dateTime: Date, taskDate: Date) {
+  return isSameDay(dateTime, taskDate) ? differenceInMinutes(taskDate, startOfDay(taskDate)) : null;
+}
+
 function getAvailableTime(from: Date, to: Date, dateTime: Date): Date {
   const dayStart = startOfDay(dateTime);
   const currentPoint = differenceInMinutes(dateTime, dayStart);
   const {fromInMinutes, toInMinutes} = getRange(from, to);
+  const taskToday = getTaskToday(dateTime, dateTime);
 
-  const sizeWorkingDayInMinutes = MINS_IN_DAY - (MINS_IN_DAY - toInMinutes) - fromInMinutes;
+  const sizeWorkingDayInMinutes = MINS_IN_DAY - (MINS_IN_DAY - (taskToday ?? toInMinutes)) - fromInMinutes;
   const ratio = sizeWorkingDayInMinutes/MINS_IN_DAY;
   const newPoint = Math.round((currentPoint)*ratio);
   const resultOffset = fromInMinutes + newPoint;
@@ -52,12 +59,10 @@ function checkInWorkRange(from: Date, to: Date, dateTime: Date): boolean {
 }
 
 function notifyTimesInNearDayWithWorkingHours(notifyTimes: Date[], from: Date, to: Date): Date[] {
-  const nearestDay = format(notifyTimes[0], DATE_FORMAT, DATE_FNS_OPTIONS);
-  const notifiesInNearestDay = notifyTimes.filter( (date) => format(date, DATE_FORMAT, DATE_FNS_OPTIONS) === nearestDay );
+  const nearestDay = format(notifyTimes[0], DATE_FORMAT);
+  const notifiesInNearestDay = notifyTimes.filter( (date) => format(date, DATE_FORMAT) === nearestDay );
 
-  const allNotifiesInRange = notifiesInNearestDay.reduce( (value, date) => {
-    value = checkInWorkRange(from, to, date); return value;
-  }, false);
+  const allNotifiesInRange = notifiesInNearestDay.every( (date) => checkInWorkRange(from, to, date));
 
   return !allNotifiesInRange ?
         notifiesInNearestDay.map( (date) => getAvailableTime(from, to, date)) :
