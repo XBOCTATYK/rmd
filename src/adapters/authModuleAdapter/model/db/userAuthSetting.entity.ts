@@ -1,21 +1,21 @@
 import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {SettingTypeEntity} from './settingType.entity';
+import {AuthSettingTypeEntity} from './authSettingType.entity';
 
-@Entity({name: 'user_setting'})
-export class UserSettingEntity {
+@Entity({name: 'user_auth_setting'})
+export class UserAuthSettingEntity {
     @PrimaryGeneratedColumn(
         'increment',
-        {name: 'setting_id', type: 'bigint', primaryKeyConstraintName: 'user_setting_id_pk'}
+        {name: 'setting_id', type: 'bigint', primaryKeyConstraintName: 'user_auth_setting_id_pk'}
     )
       id?: number;
 
-    @Index('user_setting_user_id_idx')
+    @Index('user_auth_setting_user_id_idx')
     @Column({name: 'user_id', type: 'bigint'})
       userId?: number;
 
     @Column({name: 'setting_type', type: 'varchar'})
-    @ManyToOne(() => SettingTypeEntity, (settingType) => settingType.id)
-      settingType: SettingTypeEntity;
+    @ManyToOne(() => AuthSettingTypeEntity, (settingType) => settingType.id)
+      settingType: AuthSettingTypeEntity;
 
     @Column({name: 'setting_value', type: 'varchar', length: 128})
       settingValue: string;
@@ -23,7 +23,7 @@ export class UserSettingEntity {
     constructor(
         id: number | undefined,
         userId: number | undefined,
-        settingType: SettingTypeEntity,
+        settingType: AuthSettingTypeEntity,
         settingValue: string
     ) {
       this.id = id;

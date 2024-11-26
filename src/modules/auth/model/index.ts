@@ -1,2 +1,2 @@
 export {User} from './User';
-export {UserSetting} from './UserSetting';
+export {UserAuthSetting} from './UserAuthSetting';

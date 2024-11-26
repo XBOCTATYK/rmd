@@ -6,6 +6,8 @@ import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/sche
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto} from '../model';
 
+const MINUTE = 60000;
+
 export class SchedulerService {
   private taskScheduleService: ITaskScheduleService;
   private notificationService: INotificationsService;
@@ -31,7 +33,7 @@ export class SchedulerService {
       );
 
       await Promise.all(notifications.map(this.processNotification.bind(this)));
-    }, 60000);
+    }, MINUTE);
   }
 
   private async processNotification(notification: NotificationDto) {

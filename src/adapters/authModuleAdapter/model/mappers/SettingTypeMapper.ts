@@ -1,11 +1,11 @@
-import {SettingTypeEntity} from '../db/settingType.entity';
+import {AuthSettingTypeEntity} from '../db/authSettingType.entity';
 
 export class SettingTypeMapper {
-  public static toDto(settingType: SettingTypeEntity): string {
+  public static toDto(settingType: AuthSettingTypeEntity): string {
     return settingType.name;
   }
 
-  public static toEntity(settingType: string): SettingTypeEntity {
-    return new SettingTypeEntity(undefined, settingType, '');
+  public static toEntity(settingType: string): AuthSettingTypeEntity {
+    return new AuthSettingTypeEntity(undefined, settingType, '');
   }
 }

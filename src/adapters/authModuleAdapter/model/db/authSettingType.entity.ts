@@ -1,7 +1,7 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity({name: 'setting_type'})
-export class SettingTypeEntity {
+@Entity({name: 'auth_setting_type'})
+export class AuthSettingTypeEntity {
   constructor(
       id: number | undefined,
       name: string,

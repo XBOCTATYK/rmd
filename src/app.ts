@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {AuthModuleAdapter} from './adapters/authModuleAdapter/authModule.adapter';
-import {AuthModuleMigrations} from './adapters/authModuleAdapter/authModule.migrations';
+import {AuthModuleAdapterMigrations} from './adapters/authModuleAdapter/authModuleAdapter.migrations';
 import {SchedulingModuleAdapter} from './adapters/schedulingModuleAdapter/schedulingModule.adapter';
 import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
 import {ISchedulingModuleConfig} from './modules';
@@ -19,7 +19,7 @@ import {ITelegramModuleConfig} from './modules/telegram/telegram.types';
 
 const moduleMigrationsList = [
   new SchedulingModuleAdapterMigrations(),
-  new AuthModuleMigrations(),
+  new AuthModuleAdapterMigrations(),
   new SchedulingModuleMigrations(),
 ];
 

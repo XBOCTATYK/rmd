@@ -23,7 +23,7 @@ export class UserMapper {
       publicUserId: user.publicUserId,
       createdAt: user.createdAt,
       settings: new Map(
-          user.settings?.map((setting) => UserSettingMapper.toDto(setting)) ?? []
+          user.authSettings?.map((setting) => UserSettingMapper.toDto(setting)) ?? []
       ),
     };
   }

@@ -1,6 +1,7 @@
 import 'reflect-metadata';
-import {AuthModuleMigrations} from './adapters/authModuleAdapter/authModule.migrations';
+import {AuthModuleAdapterMigrations} from './adapters/authModuleAdapter/authModuleAdapter.migrations';
 import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
+import {UserSettingsAdapterMigrations} from './adapters/userSettingsModuleAdapter/userSettingsAdapter.migrations';
 import {evaluateModuleDataScripts} from './lib/setEntitiesToDataProvider';
 import {CommonModule} from './modules/common/common.module';
 import {IDataSourceConfiguration} from './modules/common/common.types';
@@ -16,9 +17,10 @@ import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleM
   const dbConfig = configService.get<IDataSourceConfiguration>('db');
 
   const migrations = [
-    new AuthModuleMigrations(),
+    new AuthModuleAdapterMigrations(),
     new SchedulingModuleMigrations(),
     new SchedulingModuleAdapterMigrations(),
+    new UserSettingsAdapterMigrations(),
   ];
   const commonModule = new CommonModule(loggerService, migrations);
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();

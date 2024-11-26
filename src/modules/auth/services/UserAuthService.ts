@@ -1,6 +1,6 @@
 import {IAuthUserService} from '../../common/common.types';
-import {User} from '../model';
 import {IUserAuthDao} from '../auth.types';
+import {User} from '../model';
 
 export class UserAuthService implements IAuthUserService {
   private readonly clientSecretHash: string;
@@ -33,5 +33,9 @@ export class UserAuthService implements IAuthUserService {
     }
 
     return user;
+  }
+
+  public updateUserSettings(userId: number, settings: Map<string, any>): Promise<void> {
+    return Promise.resolve(undefined);
   }
 }

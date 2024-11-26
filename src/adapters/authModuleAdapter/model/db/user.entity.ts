@@ -1,5 +1,5 @@
 import {Column, Entity, Index, OneToMany} from 'typeorm';
-import {UserSettingEntity} from './userSetting.entity';
+import {UserAuthSettingEntity} from './userAuthSetting.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -7,12 +7,12 @@ export class UserEntity {
       userId: number | undefined,
       publicUserId: string,
       createdAt: Date = new Date(),
-      settings: UserSettingEntity[]
+      settings: UserAuthSettingEntity[]
   ) {
     this.userId = userId;
     this.publicUserId = publicUserId;
     this.createdAt = createdAt;
-    this.settings = settings;
+    this.authSettings = settings;
   }
 
     @Column({primary: true, name: 'user_id', type: 'bigint', unique: true})
@@ -25,6 +25,6 @@ export class UserEntity {
     @Column({name: 'created_at', type: 'timestamp'})
     public createdAt: Date;
 
-    @OneToMany(() => UserSettingEntity, (setting) => setting.id)
-    public settings: UserSettingEntity[];
+    @OneToMany(() => UserAuthSettingEntity, (setting) => setting.id)
+    public authSettings: UserAuthSettingEntity[];
 }

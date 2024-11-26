@@ -1,4 +1,4 @@
-export class UserSetting {
+export class UserAuthSetting {
   id: number | undefined;
   userId: number;
   type: string;
