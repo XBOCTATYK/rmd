@@ -17,11 +17,11 @@ export class UserSettingEntity {
 
   @PrimaryGeneratedColumn(
       'increment',
-      {name: 'setting_id', type: 'bigint', primaryKeyConstraintName: 'user_setting_id_pk'}
+      {name: 'setting_id', type: 'bigint', primaryKeyConstraintName: 'user_setting_id_pmk'}
   )
     id: number;
 
-  @Index('user_setting_user_id_idx', {unique: true})
+  @Index('user_setting_user_id_idx_k', {unique: true})
   @Column({name: 'public_user_id', type: 'varchar'})
     publicUserId: number;
 

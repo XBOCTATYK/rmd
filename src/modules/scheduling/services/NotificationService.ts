@@ -1,15 +1,22 @@
-import {INotificationsDaoService} from '../scheduling.types';
+import {ExtendedDate} from '../../../lib/date-services/extended-date';
+import {INotificationsService, ISchedulerMetaService} from '../../common/common.types';
 import {ILoggerService} from '../../common/service/service.types';
-import {INotificationsService} from '../../common/common.types';
 import {NotificationDto} from '../model';
+import {INotificationsDaoService} from '../scheduling.types';
 
 export class NotificationService implements INotificationsService {
   private notificationDaoService: INotificationsDaoService;
+  private schedulerMetaService: ISchedulerMetaService;
   private loggerService: ILoggerService;
 
-  constructor(loggerService: ILoggerService, notificationDaoService: INotificationsDaoService) {
+  constructor(
+      loggerService: ILoggerService,
+      notificationDaoService: INotificationsDaoService,
+      schedulerMetaService: ISchedulerMetaService
+  ) {
     this.loggerService = loggerService;
     this.notificationDaoService = notificationDaoService;
+    this.schedulerMetaService = schedulerMetaService;
   }
 
   async deleteNotification(notificationId: number): Promise<void> {
@@ -35,6 +42,13 @@ export class NotificationService implements INotificationsService {
   async findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]> {
     this.loggerService.info('Finding notification by timestamp: ' + timestamp);
     return await this.notificationDaoService.findNotificationsByTimestamp(timestamp);
+  }
+
+  async findWaitingNotifications(): Promise<NotificationDto[]> {
+    this.loggerService.info('Finding waiting notifications');
+    const currentMinute = ExtendedDate.of(new Date()).roundToMinutes().get();
+    const lastNotificationDate = await this.schedulerMetaService.getLastUpdate();
+    return await this.notificationDaoService.findNotificationsSinceTimestamp(lastNotificationDate, currentMinute);
   }
 
   async saveNotification(notification: NotificationDto): Promise<void> {

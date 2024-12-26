@@ -1,9 +1,9 @@
-import {Task} from '../../../..';
-import {TaskEntity} from '../db/task.entity';
+import {TaskDto} from '../../../..';
 import {ExtendedDate} from '../../../../lib/date-services/extended-date';
+import {TaskEntity} from '../db/task.entity';
 
 export class TaskMapper {
-  public static toEntity(task: Task): TaskEntity {
+  public static toEntity(task: TaskDto): TaskEntity {
     return new TaskEntity(
         task.id,
         task.description,
@@ -16,7 +16,7 @@ export class TaskMapper {
   }
 
   static toDto(entity: TaskEntity) {
-    return new Task(
+    return new TaskDto(
         entity.id,
         entity.description,
         entity.userId,

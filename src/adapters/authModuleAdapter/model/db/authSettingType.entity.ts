@@ -14,7 +14,7 @@ export class AuthSettingTypeEntity {
 
     @PrimaryGeneratedColumn(
         'increment',
-        {name: 'setting_type_id', type: 'smallint', primaryKeyConstraintName: 'setting_type_id_pk'}
+        {name: 'setting_type_id', type: 'smallint', primaryKeyConstraintName: 'setting_type_id_pkm'}
     )
       id?: number;
 

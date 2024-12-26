@@ -5,6 +5,7 @@ import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto} from '../model';
+import {ETaskStatus} from '../model/const/ETaskStatus';
 
 const MINUTE = 60000;
 
@@ -28,12 +29,12 @@ export class SchedulerService {
 
   public start() {
     setInterval(async () => {
-      const notifications = await this.notificationService.findNotificationsByTimestamp(
-          ExtendedDate.of(new Date()).roundToMinutes().get()
-      );
+      const notifications = await this.notificationService.findWaitingNotifications();
 
       await Promise.all(notifications.map(this.processNotification.bind(this)));
     }, MINUTE);
+
+    this.findOutdatedTasks();
   }
 
   private async processNotification(notification: NotificationDto) {
@@ -44,7 +45,7 @@ export class SchedulerService {
       let nextNotificationTime;
 
       if (nextNotificationCount < 0) {
-        await this.taskScheduleService.updateTaskStatus(task.id!, 4);
+        await this.taskScheduleService.updateTaskStatus(task.id!, ETaskStatus.DONE);
       } else {
         nextNotificationTime = getNextNotifyTime(
             {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:00', TIME_FORMAT)},
@@ -69,5 +70,27 @@ export class SchedulerService {
         },
       });
     }
+  }
+
+  private async findOutdatedTasks() {
+    const taskList = await this.taskScheduleService.getOutdatedTasks();
+
+    await Promise.all(
+        taskList.map(async (task) => {
+          await this.eventBusService.fireEvent({
+            type: ESchedulingEventsType.SEND_NOTIFICATION,
+            data: {
+              notificationId: -1,
+              dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
+              description: task.description,
+            },
+            metadata: {
+              publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,
+            },
+          });
+
+          await this.taskScheduleService.updateTaskStatus(task.id!, ETaskStatus.DONE);
+        })
+    );
   }
 }

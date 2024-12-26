@@ -1,4 +1,4 @@
-import {DataSource, Repository} from 'typeorm';
+import {And, DataSource, LessThanOrEqual, MoreThan, Repository} from 'typeorm';
 import {INotificationsDaoService, NotificationDto} from '../../..';
 import {NotificationEntity} from '../model/db/notification.entity';
 import {NotificationMapper} from '../model/mappers/NotificationMapper';
@@ -28,6 +28,11 @@ export class NotificationsDaoService implements INotificationsDaoService {
   async findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]> {
     const notificationList = await this.repository.find({where: {timestamp}});
 
+    return notificationList.map((notificationEntity) => NotificationMapper.toDto(notificationEntity));
+  }
+
+  async findNotificationsSinceTimestamp(from: Date, to: Date): Promise<NotificationDto[]> {
+    const notificationList = await this.repository.find({where: {timestamp: And(MoreThan(from), LessThanOrEqual(to))}});
     return notificationList.map((notificationEntity) => NotificationMapper.toDto(notificationEntity));
   }
 

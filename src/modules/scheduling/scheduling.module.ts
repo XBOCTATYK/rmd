@@ -1,6 +1,6 @@
 import {wait} from '../../lib/wait';
 import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
-import {IAuthUserService} from '../common/common.types';
+import {IAuthUserService, ISchedulerMetaService} from '../common/common.types';
 import {ESchedulingEventsType, SchedulingEvents} from '../common/databus/schedulingMessaging.types';
 import {AbstractAuthModule} from '../common/lib/AbstractAuthModule';
 import {ILoggerService} from '../common/service/service.types';
@@ -9,6 +9,7 @@ import {ISchedulingModuleExport} from './exports.types';
 import {TaskListeners} from './listeners/TaskListeners';
 import {ISchedulingModuleConfig} from './scheduling.types';
 import {NotificationService} from './services/NotificationService';
+import {SchedulerMetaService} from './services/SchedulerMetaService';
 import {SchedulerService} from './services/SchedulerService';
 import {TaskScheduleService} from './services/TaskScheduleService';
 
@@ -19,6 +20,7 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
   private readonly notificationService: NotificationService;
   private readonly authService: IAuthUserService;
   private readonly schedulerService: SchedulerService;
+  private readonly schedulerMetaService: ISchedulerMetaService;
 
   constructor(
       loggerService: ILoggerService,
@@ -34,9 +36,16 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
         loggerService,
         schedulingModuleAdapter.taskScheduleDaoService
     );
+    this.schedulerMetaService = new SchedulerMetaService(
+        'notifications_scheduler',
+        loggerService,
+        schedulingModuleAdapter.schedulerMetaDaoService
+    );
+
     this.notificationService = new NotificationService(
         loggerService,
-        schedulingModuleAdapter.notificationDaoService
+        schedulingModuleAdapter.notificationDaoService,
+        this.schedulerMetaService
     );
 
     this.authService = authService;

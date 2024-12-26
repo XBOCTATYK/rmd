@@ -3,7 +3,7 @@ import {FULL_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
-import {NotificationDto, Task} from '../model';
+import {NotificationDto, TaskDto} from '../model';
 
 export class TaskListeners {
   private eventBusService: EventBusService<SchedulingEvents>;
@@ -40,7 +40,7 @@ export class TaskListeners {
         }
 
         const savedTask = await this.taskScheduleService?.saveTask(
-            new Task(
+            new TaskDto(
                 undefined,
                 description,
                 user.userId,

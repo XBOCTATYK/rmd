@@ -1,6 +1,6 @@
 import {DataSource} from 'typeorm';
 import {User} from '../auth';
-import {NotificationDto, Task} from '../scheduling';
+import {NotificationDto, TaskDto} from '../scheduling';
 
 export interface IDataSource {
     openSession(): void
@@ -41,10 +41,11 @@ export interface IAuthUserService {
 }
 
 export interface ITaskScheduleService {
-    saveTask(task: Task): Promise<Task>
-    getTasksByUser(userId: number): Promise<Task[]>
-    getTasksByCurrentDate(date: Date): Promise<Task[]>
-    findTask(taskId: number): Promise<Task | null>
+    saveTask(task: TaskDto): Promise<TaskDto>
+    getTasksByUser(userId: number): Promise<TaskDto[]>
+    getTasksByCurrentDate(date: Date): Promise<TaskDto[]>
+    getOutdatedTasks(): Promise<TaskDto[]>
+    findTask(taskId: number): Promise<TaskDto | null>
     deleteTask(taskId: number): Promise<void>
     updateTaskStatus(taskId: number, status: number): Promise<void>
     updateDueDate(taskId: number, dueDate: Date): Promise<void>
@@ -54,7 +55,12 @@ export interface ITaskScheduleService {
 export interface INotificationsService {
     saveNotification(notification: NotificationDto): Promise<void>
     findNextNotificationForTask(taskId: number): Promise<NotificationDto>
+    findWaitingNotifications(): Promise<NotificationDto[]>
     findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]>
     deleteNotification(notificationId: number): Promise<void>
     updateNotificationAnswer(notificationId: number, answer: number): Promise<void>
+}
+
+export interface ISchedulerMetaService {
+    getLastUpdate(): Promise<Date>
 }

@@ -1,54 +1,59 @@
 import {ITaskScheduleService} from '../../common/common.types';
-import {ITaskScheduleDaoService} from '../scheduling.types';
 import {ILoggerService} from '../../common/service/service.types';
-import {Task} from '../model';
+import {TaskDto} from '../model';
+import {ITaskScheduleDaoService} from '../scheduling.types';
 
 export class TaskScheduleService implements ITaskScheduleService {
-  private taskScheduleService: ITaskScheduleDaoService;
+  private taskScheduleDaoService: ITaskScheduleDaoService;
   private loggerService: ILoggerService;
 
   constructor(loggerService: ILoggerService, taskScheduleService: ITaskScheduleDaoService) {
     this.loggerService = loggerService;
-    this.taskScheduleService = taskScheduleService;
+    this.taskScheduleDaoService = taskScheduleService;
   }
 
-  public async saveTask(task: Task): Promise<Task> {
+  public async saveTask(task: TaskDto): Promise<TaskDto> {
     this.loggerService.info('Saving task: ' + task.id);
-    return await this.taskScheduleService.saveTask(task);
+    return await this.taskScheduleDaoService.saveTask(task);
   }
 
   async deleteTask(taskId: number): Promise<void> {
     this.loggerService.info('Deleting task: ' + taskId);
-    await this.taskScheduleService.deleteTask(taskId);
+    await this.taskScheduleDaoService.deleteTask(taskId);
   }
 
-  async findTask(taskId: number): Promise<Task | null> {
+  async findTask(taskId: number): Promise<TaskDto | null> {
     this.loggerService.info('Finding task: ' + taskId);
-    return await this.taskScheduleService.findTask(taskId);
+    return await this.taskScheduleDaoService.findTask(taskId);
   }
 
-  async getTasksByCurrentDate(date: Date): Promise<Task[]> {
+  async getTasksByCurrentDate(date: Date): Promise<TaskDto[]> {
     this.loggerService.info('Getting tasks by date: ' + date);
-    return await this.taskScheduleService.getTasksByCurrentDate(date);
+    return await this.taskScheduleDaoService.getTasksByCurrentDate(date);
   }
 
-  async getTasksByUser(userId: number): Promise<Task[]> {
+  async getTasksByUser(userId: number): Promise<TaskDto[]> {
     this.loggerService.info('Getting tasks by user: ' + userId);
-    return await this.taskScheduleService.getTasksByUser(userId);
+    return await this.taskScheduleDaoService.getUnfinishedTasksByUser(userId);
+  }
+
+  async getOutdatedTasks(): Promise<TaskDto[]> {
+    this.loggerService.info('Getting outdated tasks');
+    return await this.taskScheduleDaoService.getOutdatedTasks();
   }
 
   async updateDueDate(taskId: number, dueDate: Date): Promise<void> {
     this.loggerService.info('Updating due date: ' + taskId + ' to ' + dueDate);
-    await this.taskScheduleService.updateDueDate(taskId, dueDate);
+    await this.taskScheduleDaoService.updateDueDate(taskId, dueDate);
   }
 
   async updateNotificationCount(taskId: number, count: number): Promise<void> {
     this.loggerService.info('Updating notification count: ' + taskId + ' to ' + count);
-    await this.taskScheduleService.updateNotificationCount(taskId, count);
+    await this.taskScheduleDaoService.updateNotificationCount(taskId, count);
   }
 
   async updateTaskStatus(taskId: number, status: number): Promise<void> {
     this.loggerService.info('Updating task status: ' + taskId + ' to ' + status);
-    await this.taskScheduleService.updateTaskStatus(taskId, status);
+    await this.taskScheduleDaoService.updateTaskStatus(taskId, status);
   }
 }

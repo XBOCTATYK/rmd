@@ -1,2 +1,3 @@
-export {Task} from './Task';
+export {TaskDto} from './TaskDto';
 export {NotificationDto} from './NotificationDto';
+export {SchedulerMetaDto} from './SchedulerMetaDto';

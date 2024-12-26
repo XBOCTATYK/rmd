@@ -1,4 +1,4 @@
-export class Task {
+export class TaskDto {
   public id: number | undefined;
   public description: string;
   public userId: number;

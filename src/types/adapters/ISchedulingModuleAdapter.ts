@@ -1,6 +1,7 @@
-import {INotificationsDaoService, ITaskScheduleDaoService} from '../..';
+import {INotificationsDaoService, ISchedulerMetaDaoService, ITaskScheduleDaoService} from '../..';
 
 export interface ISchedulingModuleAdapter {
     notificationDaoService: INotificationsDaoService,
-    taskScheduleDaoService: ITaskScheduleDaoService
+    taskScheduleDaoService: ITaskScheduleDaoService,
+    schedulerMetaDaoService: ISchedulerMetaDaoService
 }
