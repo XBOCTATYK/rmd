@@ -67,9 +67,16 @@ export class TelegramApiService<TAppCtx extends object> implements ITelegramApiS
   }
 
   private startCallbackHandlers() {
-    this.telegraf.on('callback_query', (ctx) => {
+    this.telegraf.on('callback_query', async (ctx) => {
+      let extraCtx = <TAppCtx>{};
+      for (const interceptor of this.interceptors) {
+        extraCtx = 'handle' in interceptor ?
+          await interceptor.handle(ctx, extraCtx) :
+          await interceptor(ctx, extraCtx);
+      }
+
       for (const handler of this.callbackHandlers) {
-        handler(ctx);
+        handler(ctx, extraCtx);
       }
     });
   }

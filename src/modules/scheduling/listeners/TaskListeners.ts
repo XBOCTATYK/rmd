@@ -1,5 +1,6 @@
+import {getNextNotifyTime} from '../../../lib/calculateTime';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
-import {FULL_FORMAT} from '../../../lib/formats/formats';
+import {FULL_FORMAT, TIME_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {ENotificationAnswerType} from '../../common/types/ENotificationAnswerType';
@@ -41,6 +42,7 @@ export class TaskListeners {
           throw new Error(`User with public id ${publicUserId} was not found!`);
         }
 
+        const dueDate = ExtendedDate.of(new Date(date + ' ' + time)).roundToMinutes().get();
         const savedTask = await this.taskScheduleService?.saveTask(
             new TaskDto(
                 undefined,
@@ -49,11 +51,16 @@ export class TaskListeners {
                 0,
                 priority,
                 2,
-                ExtendedDate.of(new Date(date + ' ' + time)).roundToMinutes().get()
+                dueDate
             )
         );
 
-        const nextNotificationTime = ExtendedDate.of(new Date()).addHours(2).roundToMinutes();
+        const nextNotificationTime = ExtendedDate.of(
+            getNextNotifyTime(
+                {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:59', TIME_FORMAT)},
+                {dueDate: dueDate, notificationsNeed: priority}
+            )
+        );
 
         await this.notificationService.saveNotification(
             new NotificationDto(
@@ -113,7 +120,7 @@ export class TaskListeners {
 
         const notification = await this.notificationService.findNotification(notificationId);
 
-        if (!notification) {
+        if (!notification || notification.answer > 0) {
           this.sendError({publicUserId, error: 'Notification was not found!'});
 
           return;

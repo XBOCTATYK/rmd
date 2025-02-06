@@ -22,4 +22,8 @@ export class SchedulerMetaDaoService implements ISchedulerMetaDaoService {
 
     return schedulerMetaEntity ? SchedulerMetaMapper.toDto(schedulerMetaEntity) : null;
   }
+
+  public async updateSchedulerMeta(key: string, lastUpdate: Date): Promise<void> {
+    await this.repository.update({key}, {lastUpdate});
+  }
 }

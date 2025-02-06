@@ -31,6 +31,7 @@ export class SchedulerService {
     setInterval(async () => {
       const notifications = await this.notificationService.findWaitingNotifications();
 
+      console.log(notifications);
       await Promise.all(notifications.map(this.processNotification.bind(this)));
     }, MINUTE);
 
@@ -41,19 +42,18 @@ export class SchedulerService {
     const task = await this.taskScheduleService.findTask(notification.taskId);
 
     if (task) {
-      if (task.dueDate < new Date()) {
-        await this.taskScheduleService.updateTaskStatus(task.id!, ETaskStatus.DONE);
+      if (task.dueDate < new Date() || task.status === ETaskStatus.DONE) {
         return;
       }
 
       const nextNotificationCount = task.notificationsCount - 1;
       let nextNotificationTime;
 
-      if (nextNotificationCount < 0) {
+      if (nextNotificationCount === 0) {
         await this.taskScheduleService.updateTaskStatus(task.id!, ETaskStatus.DONE);
       } else {
         nextNotificationTime = getNextNotifyTime(
-            {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:00', TIME_FORMAT)},
+            {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:59', TIME_FORMAT)},
             {dueDate: task.dueDate, notificationsNeed: nextNotificationCount}
         );
         await this.notificationService.saveNotification(

@@ -34,4 +34,9 @@ export class SchedulerMetaService implements ISchedulerMetaService {
 
     return result.lastUpdate;
   }
+
+  async updateLastUpdate(updateDate: Date): Promise<void> {
+    this.loggerService.info(`Updating last update of: ${this.key}`);
+    await this.schedulerMetaDaoService.updateSchedulerMeta(this.key, updateDate);
+  }
 }

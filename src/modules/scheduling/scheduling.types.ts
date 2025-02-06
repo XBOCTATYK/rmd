@@ -45,4 +45,5 @@ export interface INotificationsDaoService {
 export interface ISchedulerMetaDaoService {
     addSchedulerMeta(schedulerMeta: SchedulerMetaDto): Promise<void>;
     getSchedulerMetaByKey(key: string): Promise<SchedulerMetaDto | null>;
+    updateSchedulerMeta(key: string, lastUpdate: Date): Promise<void>;
 }

@@ -53,7 +53,10 @@ export class NotificationService implements INotificationsService {
     this.loggerService.info('Finding waiting notifications');
     const currentMinute = ExtendedDate.of(new Date()).roundToMinutes().get();
     const lastNotificationDate = await this.schedulerMetaService.getLastUpdate();
-    return await this.notificationDaoService.findNotificationsSinceTimestamp(lastNotificationDate, currentMinute);
+    const result = await this.notificationDaoService.findNotificationsSinceTimestamp(lastNotificationDate, currentMinute);
+    this.schedulerMetaService.updateLastUpdate(currentMinute);
+
+    return result;
   }
 
   async saveNotification(notification: NotificationDto): Promise<void> {

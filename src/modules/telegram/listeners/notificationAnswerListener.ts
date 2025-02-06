@@ -2,17 +2,15 @@ import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/sche
 import {ITelegramApiService} from '../services/service.types';
 import {IAppContext, ITelegramUserService} from '../telegram.types';
 
-export function taskCreatedListener(
+export function notificationAnswerListener(
     telegramUserService: ITelegramUserService,
-    telegramApiService: ITelegramApiService<IAppContext>
+    telegramApiService: ITelegramApiService<IAppContext>,
 ) {
   return async function(event: SchedulingEvents) {
-    if (event.type === ESchedulingEventsType.TASK_CREATED) {
-      telegramApiService?.getProvider().telegram.sendMessage(
+    if (event.type === ESchedulingEventsType.NOTIFICATION_ANSWER_PROCESSING_ERROR) {
+      await telegramApiService?.getProvider().telegram.sendMessage(
           (await telegramUserService.getUserByPublicId(event.metadata.publicUserId)).telegramId,
-          `Task successfully added! 
-          \n${event.data.description} \nDue date: ${event.data.dueDate} 
-          \nThe closest notification: ${event.data.firsNotificationDate}`
+          `Oh, wait! ${event.data.error}`
       );
     }
   };

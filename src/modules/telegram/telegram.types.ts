@@ -1,6 +1,6 @@
 import {Markup} from 'telegraf';
 import {InlineKeyboardMarkup} from 'telegraf/src/core/types/typegram';
-import {TelegramUser} from './model/TelegramUser';
+import {TelegramUser} from './model';
 import {ITelegramApiService} from './services/service.types';
 
 export interface ITelegramModuleConfig {

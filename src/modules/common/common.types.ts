@@ -64,4 +64,5 @@ export interface INotificationsService {
 
 export interface ISchedulerMetaService {
     getLastUpdate(): Promise<Date>
+    updateLastUpdate(lastUpdate: Date): Promise<void>
 }

@@ -59,6 +59,7 @@ function checkInWorkRange(from: Date, to: Date, dateTime: Date): boolean {
 }
 
 function notifyTimesInNearDayWithWorkingHours(notifyTimes: Date[], from: Date, to: Date): Date[] {
+  console.log('notifyTimesInNearDayWithWorkingHours', notifyTimes);
   const nearestDay = format(notifyTimes[0], DATE_FORMAT);
   const notifiesInNearestDay = notifyTimes.filter( (date) => format(date, DATE_FORMAT) === nearestDay );
 
@@ -76,6 +77,8 @@ export function getNextNotifyTime(
   const dateNow = new Date();
   const nextNotificationsTimes = notifyTimes(dateNow, task.dueDate, task.notificationsNeed);
 
-  return notifyTimesInNearDayWithWorkingHours(nextNotificationsTimes, user.startTime, user.endTime)[0];
+  return nextNotificationsTimes.length > 0 ?
+    notifyTimesInNearDayWithWorkingHours(nextNotificationsTimes, user.startTime, user.endTime)[0] :
+    task.dueDate;
 }
 
