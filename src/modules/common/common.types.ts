@@ -54,6 +54,7 @@ export interface ITaskScheduleService {
 
 export interface INotificationsService {
     saveNotification(notification: NotificationDto): Promise<void>
+    findNotification(notificationId: number): Promise<NotificationDto | null>
     findNextNotificationForTask(taskId: number): Promise<NotificationDto>
     findWaitingNotifications(): Promise<NotificationDto[]>
     findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]>

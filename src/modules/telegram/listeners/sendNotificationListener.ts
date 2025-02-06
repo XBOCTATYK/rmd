@@ -1,11 +1,11 @@
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {INotificationControl} from '../services/controls/control.types';
 import {ITelegramApiService} from '../services/service.types';
-import {ITelegramUserService} from '../telegram.types';
+import {IAppContext, ITelegramUserService} from '../telegram.types';
 
 export function sendNotificationListener(
     telegramUserService: ITelegramUserService,
-    telegramApiService: ITelegramApiService,
+    telegramApiService: ITelegramApiService<IAppContext>,
     notificationControl: INotificationControl
 ) {
   return async function(event: SchedulingEvents) {

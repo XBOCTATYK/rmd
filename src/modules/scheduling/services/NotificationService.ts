@@ -24,6 +24,11 @@ export class NotificationService implements INotificationsService {
     await this.notificationDaoService.deleteNotification(notificationId);
   }
 
+  async findNotification(notificationId: number): Promise<NotificationDto | null> {
+    this.loggerService.info('Finding notification: ' + notificationId);
+    return await this.notificationDaoService.findNotification(notificationId);
+  }
+
   async findNextNotificationForTask(taskId: number): Promise<NotificationDto> {
     this.loggerService.info('Finding next notification for task: ' + taskId);
 

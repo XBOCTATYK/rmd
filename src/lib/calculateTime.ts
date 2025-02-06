@@ -75,7 +75,6 @@ export function getNextNotifyTime(
 ): Date {
   const dateNow = new Date();
   const nextNotificationsTimes = notifyTimes(dateNow, task.dueDate, task.notificationsNeed);
-  console.log(nextNotificationsTimes);
 
   return notifyTimesInNearDayWithWorkingHours(nextNotificationsTimes, user.startTime, user.endTime)[0];
 }

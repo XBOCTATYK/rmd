@@ -41,6 +41,11 @@ export class SchedulerService {
     const task = await this.taskScheduleService.findTask(notification.taskId);
 
     if (task) {
+      if (task.dueDate < new Date()) {
+        await this.taskScheduleService.updateTaskStatus(task.id!, ETaskStatus.DONE);
+        return;
+      }
+
       const nextNotificationCount = task.notificationsCount - 1;
       let nextNotificationTime;
 

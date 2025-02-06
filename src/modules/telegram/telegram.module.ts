@@ -7,6 +7,7 @@ import {HelloHandler} from './handlers/HelloHandler';
 import {NotificationAnswerHandler} from './handlers/NotificationAnswerHandler';
 import {TaskCreationHandler} from './handlers/TaskCreationHandler';
 import {TaskListHandler} from './handlers/TaskListHandler';
+import {UserInterceptor} from './incerceptors/UserInterceptor';
 import {helloListener} from './listeners/helloListener';
 import {sendNotificationListener} from './listeners/sendNotificationListener';
 import {taskCreatedListener} from './listeners/taskCreatedListener';
@@ -15,13 +16,13 @@ import {NotificationAnswerControl} from './services/controls/NotificationAnswerC
 import {ITelegramApiService} from './services/service.types';
 import {TelegramApiService} from './services/telegram-api.service';
 import {TelegramUserService} from './services/TelegramUserService';
-import {ITelegramModuleConfig, ITelegramModuleExports} from './telegram.types';
+import {IAppContext, ITelegramModuleConfig, ITelegramModuleExports} from './telegram.types';
 
 export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, ITelegramModuleExports> {
   private loggerService: ILoggerService;
   private readonly dataBusService: EventBusService<SchedulingEvents>;
   private readonly authService: IAuthUserService;
-  private telegramApiService?: ITelegramApiService;
+  private telegramApiService?: ITelegramApiService<IAppContext>;
   private telegramUserService?: TelegramUserService;
   private readonly notificationControl: NotificationAnswerControl;
 
@@ -80,13 +81,21 @@ export class TelegramModule extends AbstractAuthModule<ITelegramModuleConfig, IT
   private async initHandlers() {
     const handlers = [
       new HelloHandler(),
-      new TaskCreationHandler(this.telegramUserService!, this.dataBusService),
+      new TaskCreationHandler(this.dataBusService),
       new NotificationAnswerHandler(this.dataBusService, this.notificationControl!),
-      new TaskListHandler(this.telegramUserService!, this.dataBusService),
+      new TaskListHandler(this.dataBusService),
     ];
 
     for (const handler of handlers) {
       this.telegramApiService!.addHandler(handler);
+    }
+
+    const interceptors = [
+      new UserInterceptor(this.telegramUserService!),
+    ];
+
+    for (const interceptor of interceptors) {
+      this.telegramApiService!.addInterceptor(interceptor);
     }
   }
 }

@@ -2,8 +2,10 @@ import {ExtendedDate} from '../../../lib/date-services/extended-date';
 import {FULL_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
+import {ENotificationAnswerType} from '../../common/types/ENotificationAnswerType';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto, TaskDto} from '../model';
+import {ETaskStatus} from '../model/const/ETaskStatus';
 
 export class TaskListeners {
   private eventBusService: EventBusService<SchedulingEvents>;
@@ -106,8 +108,39 @@ export class TaskListeners {
     await this.eventBusService.addListener('scheduling', async (event) => {
       if (event.type === ESchedulingEventsType.NOTIFICATION_ANSWER) {
         const {notificationId, answer} = event.data;
+        const {publicUserId} = event.metadata ?? {};
         await this.notificationService.updateNotificationAnswer(notificationId, answer);
+
+        const notification = await this.notificationService.findNotification(notificationId);
+
+        if (!notification) {
+          this.sendError({publicUserId, error: 'Notification was not found!'});
+
+          return;
+        }
+
+        const task = await this.taskScheduleService.findTask(notification.taskId);
+
+        if (task && task.status !== ETaskStatus.DONE) {
+          if (answer === ENotificationAnswerType.FORGOT) {
+            await this.taskScheduleService.updateNotificationCount(notification.taskId, task.notificationsCount + 1);
+          }
+
+          if (answer === ENotificationAnswerType.DONE) {
+            await this.taskScheduleService.updateTaskStatus(notification.taskId, ETaskStatus.DONE);
+          }
+        } else {
+          this.sendError({publicUserId, error: 'This task is already done!'});
+        }
       }
+    });
+  }
+
+  private sendError({publicUserId, error}: { publicUserId: string; error: string }) {
+    this.eventBusService.fireEvent({
+      type: ESchedulingEventsType.NOTIFICATION_ANSWER_PROCESSING_ERROR,
+      data: {error},
+      metadata: {publicUserId},
     });
   }
 }

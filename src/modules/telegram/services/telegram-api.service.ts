@@ -1,11 +1,18 @@
 import {Context, Telegraf} from 'telegraf';
 import {message} from 'telegraf/filters';
-import {ITelegramApiService, ITelegramHandler, TelegramHandlerCallback} from './service.types';
+import {
+  ITelegramApiService,
+  ITelegramCommandHandler,
+  ITelegramHandler,
+  ITelegramMessageInterceptor,
+  TelegramHandlerWithAppContextCallback,
+} from './service.types';
 
-export class TelegramApiService implements ITelegramApiService {
+export class TelegramApiService<TAppCtx extends object> implements ITelegramApiService<TAppCtx> {
   private readonly telegraf: Telegraf;
-  private readonly callbackHandlers: TelegramHandlerCallback[] = [];
-  private readonly messageHandlers: TelegramHandlerCallback[] = [];
+  private readonly callbackHandlers: TelegramHandlerWithAppContextCallback<TAppCtx>[] = [];
+  private readonly messageHandlers: TelegramHandlerWithAppContextCallback<TAppCtx>[] = [];
+  private readonly interceptors: ITelegramMessageInterceptor<TAppCtx>[] = [];
 
   constructor(token: string) {
     this.telegraf = new Telegraf(token);
@@ -15,7 +22,7 @@ export class TelegramApiService implements ITelegramApiService {
     return this.telegraf;
   }
 
-  public addHandler({type, name, handle}: ITelegramHandler) {
+  public addHandler({type, name, handle}: ITelegramHandler<TAppCtx> | ITelegramCommandHandler) {
     if (type === 'command') {
       this.telegraf.command(name, handle);
       return;
@@ -34,6 +41,10 @@ export class TelegramApiService implements ITelegramApiService {
     throw new Error(`You specified unknown type of handler [${type}]!`);
   }
 
+  public addInterceptor(interceptor: ITelegramMessageInterceptor<TAppCtx>) {
+    this.interceptors.push(interceptor);
+  }
+
   public async start() {
     this.telegraf.on(message('text'), this.getMainHandler());
     this.startCallbackHandlers();
@@ -43,8 +54,14 @@ export class TelegramApiService implements ITelegramApiService {
 
   public getMainHandler() {
     return async (ctx: Context) => {
+      let extraCtx = <TAppCtx>{};
+      for (const interceptor of this.interceptors) {
+        extraCtx = 'handle' in interceptor ?
+          await interceptor.handle(ctx, extraCtx) :
+          await interceptor(ctx, extraCtx);
+      }
       this.messageHandlers.map((handler) => {
-        handler(ctx).then((r) => r);
+        handler(ctx, extraCtx).then((r) => r);
       });
     };
   }

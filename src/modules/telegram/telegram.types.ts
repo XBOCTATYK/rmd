@@ -1,7 +1,7 @@
-import {ITelegramApiService} from './services/service.types';
-import {TelegramUser} from './model/TelegramUser';
 import {Markup} from 'telegraf';
 import {InlineKeyboardMarkup} from 'telegraf/src/core/types/typegram';
+import {TelegramUser} from './model/TelegramUser';
+import {ITelegramApiService} from './services/service.types';
 
 export interface ITelegramModuleConfig {
     token: string
@@ -9,8 +9,12 @@ export interface ITelegramModuleConfig {
     iv: string
 }
 
+export type IAppContext = Partial<{
+    publicUserId: string
+}>
+
 export interface ITelegramModuleExports {
-    telegramApiService: ITelegramApiService
+    telegramApiService: ITelegramApiService<IAppContext>
 }
 
 export interface IMessageMapper {

@@ -1,10 +1,10 @@
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {ITelegramApiService} from '../services/service.types';
-import {ITelegramUserService} from '../telegram.types';
+import {IAppContext, ITelegramUserService} from '../telegram.types';
 
 export function taskListAcquiredListener(
     telegramUserService: ITelegramUserService,
-    telegramApiService: ITelegramApiService,
+    telegramApiService: ITelegramApiService<IAppContext>,
 ) {
   return async function(event: SchedulingEvents) {
     if (event.type === ESchedulingEventsType.TASK_LIST_ACQUIRED) {
@@ -13,7 +13,7 @@ export function taskListAcquiredListener(
       });
       telegramApiService?.getProvider().telegram.sendMessage(
           (await telegramUserService!.getUserByPublicId(event.metadata.publicUserId)).telegramId,
-          allTaskInMessage.join('\n\n')
+        allTaskInMessage.length === 0 ? 'You have no tasks' : allTaskInMessage.join('\n\n')
       );
     }
   };

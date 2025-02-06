@@ -29,6 +29,8 @@ export interface ITaskScheduleDaoService {
 export interface INotificationsDaoService {
     saveNotification(notification: NotificationDto): Promise<void>;
 
+    findNotification(notificationId: number): Promise<NotificationDto | null>;
+
     findNextNotificationForTask(taskId: number): Promise<NotificationDto | null>;
 
     findNotificationsByTimestamp(timestamp: Date): Promise<NotificationDto[]>;

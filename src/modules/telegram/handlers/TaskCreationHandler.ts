@@ -2,23 +2,17 @@ import {Context} from 'telegraf';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {ITelegramHandler} from '../services/service.types';
-import {ITelegramUserService} from '../telegram.types';
+import {IAppContext} from '../telegram.types';
 
-export class TaskCreationHandler implements ITelegramHandler {
-  private readonly telegramUserService: ITelegramUserService;
-  private readonly dataBusService: EventBusService<SchedulingEvents>;
-
+export class TaskCreationHandler implements ITelegramHandler<IAppContext> {
   public readonly name = 'task-creation';
   public readonly type = 'message';
 
   public static readonly DEFAULT_PRIORITY = 2;
 
-  constructor(authService: ITelegramUserService, dataBusService: EventBusService<SchedulingEvents>) {
-    this.telegramUserService = authService;
-    this.dataBusService = dataBusService;
-  }
+  constructor(private readonly dataBusService: EventBusService<SchedulingEvents>) {}
 
-  public handle = async (ctx: Context) => {
+  public handle = async (ctx: Context, appContext: IAppContext) => {
     const text = ctx?.text ?? '';
     const [type, description, date, time, priority] = text?.split('\n') ?? ['', '', '', '', ''];
 
@@ -34,12 +28,11 @@ export class TaskCreationHandler implements ITelegramHandler {
       repeat: undefined,
     };
 
-    const publicUserId = (await this.telegramUserService.getUserByTelegramId(Number(ctx.from?.id))).publicUserId;
     await this.dataBusService.fireEvent({
       type: ESchedulingEventsType.NEW_TASK,
       data: task,
       metadata: {
-        publicUserId,
+        publicUserId: appContext.publicUserId!,
       },
     });
   };

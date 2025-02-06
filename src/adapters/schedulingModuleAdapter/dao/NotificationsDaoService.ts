@@ -15,6 +15,16 @@ export class NotificationsDaoService implements INotificationsDaoService {
     await this.repository.delete(notificationId);
   }
 
+  async findNotification(notificationId: number): Promise<NotificationDto | null> {
+    const notificationEntity = await this.repository.findOne({where: {id: notificationId}});
+
+    if (!notificationEntity) {
+      return null;
+    }
+
+    return NotificationMapper.toDto(notificationEntity);
+  }
+
   async findNextNotificationForTask(taskId: number): Promise<NotificationDto | null> {
     const notificationEntity = await this.repository.findOne({where: {taskId, answer: 0}});
 

@@ -6,6 +6,7 @@ export enum ESchedulingEventsType {
   TASK_LIST_ACQUIRED = 'task-list-acquired',
   NOTIFICATION_ANSWER = 'notification-answer',
   TASK_CREATED = 'task-created',
+  NOTIFICATION_ANSWER_PROCESSING_ERROR = 'notification-answer-processing-error'
 }
 
 export type NewTaskEvent = {
@@ -69,6 +70,9 @@ export type SendNotificationAnswerEvent = {
     data: {
         notificationId: number;
         answer: number;
+    },
+    metadata: {
+        publicUserId: string
     }
 }
 
@@ -84,6 +88,16 @@ export type TaskCreatedEvent = {
     }
 }
 
+export type NotificationAnswerProcessingErrorEvent = {
+    type: ESchedulingEventsType.NOTIFICATION_ANSWER_PROCESSING_ERROR;
+    data: {
+        error: string;
+    },
+    metadata: {
+        publicUserId: string
+    }
+}
+
 export type SchedulingEvents =
     NewTaskEvent |
     SendNotificationEvent |
@@ -91,4 +105,5 @@ export type SchedulingEvents =
     TaskListAcquiredEvent |
     SendNotificationAnswerEvent |
     HelloEvent |
-    TaskCreatedEvent;
+    TaskCreatedEvent |
+    NotificationAnswerProcessingErrorEvent;

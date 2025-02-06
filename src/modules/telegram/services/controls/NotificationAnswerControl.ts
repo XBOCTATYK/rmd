@@ -1,8 +1,8 @@
 import {Context, Markup} from 'telegraf';
 import {CallbackQuery, InlineKeyboardMarkup} from 'telegraf/src/core/types/typegram';
+import {ENotificationAnswerType} from '../../../common/types/ENotificationAnswerType';
 import {InvalidQueryError} from '../../exceptions';
 import {NotificationAnswer} from '../../model';
-import {ENotificationAnswerType} from '../../model/enums/ENotificationAnswerType';
 
 import {INotificationControl} from './control.types';
 
