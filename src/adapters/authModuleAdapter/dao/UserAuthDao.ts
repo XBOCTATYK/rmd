@@ -1,15 +1,13 @@
-import {IUserAuthDao} from '../../../modules';
-import {User} from '../../..';
 import {DataSource, Repository} from 'typeorm';
+import {User} from '../../..';
+import {IUserAuthDao} from '../../../modules';
 import {UserEntity} from '../model/db/user.entity';
 import {UserMapper} from '../model/mappers/UserMapper';
 
 export class UserAuthDao implements IUserAuthDao {
-  private dataSource: DataSource;
-  private repository: Repository<UserEntity>;
+  private readonly repository: Repository<UserEntity>;
 
-  constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
+  constructor(private readonly dataSource: DataSource) {
     this.repository = this.dataSource.getRepository(UserEntity);
   }
   public async findUserByPublicId(publicUserId: string): Promise<User | null> {

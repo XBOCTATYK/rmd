@@ -6,11 +6,8 @@ export abstract class AbstractAuthModule<
 > implements IAppModule<T, K> {
   protected initialized = false;
   protected config?: T;
-  private readonly name: string;
 
-  protected constructor(name: string) {
-    this.name = name;
-  }
+  protected constructor(private readonly name: string) {}
 
     protected abstract initModule(config: T): Promise<this>;
 

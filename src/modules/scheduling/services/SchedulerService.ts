@@ -11,22 +11,12 @@ import {ETaskStatus} from '../model/const/ETaskStatus';
 const MINUTE = 60000;
 
 export class SchedulerService {
-  private taskScheduleService: ITaskScheduleService;
-  private notificationService: INotificationsService;
-  private eventBusService: EventBusService<SchedulingEvents>;
-  private authService: IAuthUserService;
-
   constructor(
-      taskScheduleService: ITaskScheduleService,
-      notificationService: INotificationsService,
-      eventBusService: EventBusService<SchedulingEvents>,
-      authService: IAuthUserService
-  ) {
-    this.taskScheduleService = taskScheduleService;
-    this.notificationService = notificationService;
-    this.eventBusService = eventBusService;
-    this.authService = authService;
-  }
+      private readonly taskScheduleService: ITaskScheduleService,
+      private readonly notificationService: INotificationsService,
+      private readonly eventBusService: EventBusService<SchedulingEvents>,
+      private readonly authService: IAuthUserService
+  ) {}
 
   public start() {
     setInterval(async () => {

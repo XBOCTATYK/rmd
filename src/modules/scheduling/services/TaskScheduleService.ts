@@ -4,13 +4,10 @@ import {TaskDto} from '../model';
 import {ITaskScheduleDaoService} from '../scheduling.types';
 
 export class TaskScheduleService implements ITaskScheduleService {
-  private taskScheduleDaoService: ITaskScheduleDaoService;
-  private loggerService: ILoggerService;
-
-  constructor(loggerService: ILoggerService, taskScheduleService: ITaskScheduleDaoService) {
-    this.loggerService = loggerService;
-    this.taskScheduleDaoService = taskScheduleService;
-  }
+  constructor(
+    private readonly loggerService: ILoggerService,
+    private readonly taskScheduleDaoService: ITaskScheduleDaoService
+  ) {}
 
   public async saveTask(task: TaskDto): Promise<TaskDto> {
     this.loggerService.info('Saving task: ' + task.id);

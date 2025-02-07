@@ -5,15 +5,11 @@ import {SchedulerMetaDto} from '../model';
 import {ISchedulerMetaDaoService} from '../scheduling.types';
 
 export class SchedulerMetaService implements ISchedulerMetaService {
-  private readonly key: string;
-  private loggerService: ILoggerService;
-  private schedulerMetaDaoService: ISchedulerMetaDaoService;
-
-  constructor(key: string, loggerService: ILoggerService, schedulerMetaDaoService: ISchedulerMetaDaoService) {
-    this.schedulerMetaDaoService = schedulerMetaDaoService;
-    this.key = key;
-    this.loggerService = loggerService;
-  }
+  constructor(
+    private readonly key: string,
+    private readonly loggerService: ILoggerService,
+    private readonly schedulerMetaDaoService: ISchedulerMetaDaoService
+  ) {}
   async getLastUpdate(): Promise<Date> {
     this.loggerService.info(`Getting last update of: ${this.key}`);
     const result = await this.schedulerMetaDaoService.getSchedulerMetaByKey(this.key);

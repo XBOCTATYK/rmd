@@ -4,11 +4,9 @@ import {SchedulerMetaEntity} from '../model/db/scheduler-meta.entity';
 import {SchedulerMetaMapper} from '../model/mappers/SchedulerMetaMapper';
 
 export class SchedulerMetaDaoService implements ISchedulerMetaDaoService {
-  private dataSource: DataSource;
-  private repository: Repository<SchedulerMetaEntity>;
+  private readonly repository: Repository<SchedulerMetaEntity>;
 
-  constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
+  constructor(private readonly dataSource: DataSource) {
     this.repository = this.dataSource.getRepository(SchedulerMetaEntity);
   }
 

@@ -5,19 +5,11 @@ import {NotificationDto} from '../model';
 import {INotificationsDaoService} from '../scheduling.types';
 
 export class NotificationService implements INotificationsService {
-  private notificationDaoService: INotificationsDaoService;
-  private schedulerMetaService: ISchedulerMetaService;
-  private loggerService: ILoggerService;
-
   constructor(
-      loggerService: ILoggerService,
-      notificationDaoService: INotificationsDaoService,
-      schedulerMetaService: ISchedulerMetaService
-  ) {
-    this.loggerService = loggerService;
-    this.notificationDaoService = notificationDaoService;
-    this.schedulerMetaService = schedulerMetaService;
-  }
+      private readonly loggerService: ILoggerService,
+      private readonly notificationDaoService: INotificationsDaoService,
+      private readonly schedulerMetaService: ISchedulerMetaService
+  ) {}
 
   async deleteNotification(notificationId: number): Promise<void> {
     this.loggerService.info('Deleting notification: ' + notificationId);

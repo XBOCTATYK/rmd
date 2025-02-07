@@ -4,11 +4,9 @@ import {NotificationEntity} from '../model/db/notification.entity';
 import {NotificationMapper} from '../model/mappers/NotificationMapper';
 
 export class NotificationsDaoService implements INotificationsDaoService {
-  private dataSource: DataSource;
-  private repository: Repository<NotificationEntity>;
+  private readonly repository: Repository<NotificationEntity>;
 
-  constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
+  constructor(private readonly dataSource: DataSource) {
     this.repository = this.dataSource.getRepository(NotificationEntity);
   }
   async deleteNotification(notificationId: number): Promise<void> {

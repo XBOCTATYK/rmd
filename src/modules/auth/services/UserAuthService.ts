@@ -3,15 +3,11 @@ import {IUserAuthDao} from '../auth.types';
 import {User} from '../model';
 
 export class UserAuthService implements IAuthUserService {
-  private readonly clientSecretHash: string;
-  private readonly allowedUsers: string[];
-  private userAuthDao: IUserAuthDao;
-
-  constructor(userAuthDao: IUserAuthDao, clientSecretHash: string, allowedUsers: string[] = []) {
-    this.userAuthDao = userAuthDao;
-    this.clientSecretHash = clientSecretHash;
-    this.allowedUsers = allowedUsers;
-  }
+  constructor(
+    private readonly userAuthDao: IUserAuthDao,
+    private readonly clientSecretHash: string,
+    private readonly allowedUsers: string[] = []
+  ) {}
 
   public async checkPermission(permission: string, userId: string): Promise<boolean> {
     return this.allowedUsers.includes(userId);

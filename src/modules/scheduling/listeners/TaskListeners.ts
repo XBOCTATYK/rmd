@@ -9,21 +9,12 @@ import {NotificationDto, TaskDto} from '../model';
 import {ETaskStatus} from '../model/const/ETaskStatus';
 
 export class TaskListeners {
-  private eventBusService: EventBusService<SchedulingEvents>;
-  private taskScheduleService: ITaskScheduleService;
-  private notificationService: INotificationsService;
-  private userService: IAuthUserService;
   constructor(
-      eventBusService: EventBusService<SchedulingEvents>,
-      taskScheduleService: ITaskScheduleService,
-      notificationService: INotificationsService,
-      userService: IAuthUserService
+      private readonly eventBusService: EventBusService<SchedulingEvents>,
+      private readonly taskScheduleService: ITaskScheduleService,
+      private readonly notificationService: INotificationsService,
+      private readonly userService: IAuthUserService
   ) {
-    this.eventBusService = eventBusService;
-    this.taskScheduleService = taskScheduleService;
-    this.notificationService = notificationService;
-    this.userService = userService;
-
     Promise.all([
       this.runNewTaskListener(),
       this.runTaskListAcquiredListener(),

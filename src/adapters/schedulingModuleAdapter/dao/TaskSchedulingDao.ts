@@ -5,11 +5,9 @@ import {TaskEntity} from '../model/db/task.entity';
 import {TaskMapper} from '../model/mappers/TaskMapper';
 
 export class TaskScheduleDaoService implements ITaskScheduleDaoService {
-  private dataSource: DataSource;
-  private repository: Repository<TaskEntity>;
+  private readonly repository: Repository<TaskEntity>;
 
-  constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
+  constructor(private readonly dataSource: DataSource) {
     this.repository = this.dataSource.getRepository(TaskEntity);
   }
 

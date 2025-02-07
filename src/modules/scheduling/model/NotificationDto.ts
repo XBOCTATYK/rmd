@@ -1,13 +1,8 @@
 export class NotificationDto {
-  id: number | undefined;
-  timestamp: Date;
-  answer: number;
-  taskId: number;
-
-  constructor(id: number | undefined, timestamp: Date, answer: number, taskId: number) {
-    this.id = id;
-    this.timestamp = timestamp;
-    this.answer = answer;
-    this.taskId = taskId;
-  }
+  constructor(
+    public id: number | undefined,
+    public timestamp: Date,
+    public answer: number,
+    public taskId: number
+  ) {}
 }

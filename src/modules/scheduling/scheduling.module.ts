@@ -14,24 +14,19 @@ import {SchedulerService} from './services/SchedulerService';
 import {TaskScheduleService} from './services/TaskScheduleService';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
-  private readonly loggerService: ILoggerService;
-  private readonly eventBusService: EventBusService<SchedulingEvents>;
   private readonly taskScheduleService?: TaskScheduleService;
   private readonly notificationService: NotificationService;
-  private readonly authService: IAuthUserService;
   private readonly schedulerService: SchedulerService;
   private readonly schedulerMetaService: ISchedulerMetaService;
 
   constructor(
-      loggerService: ILoggerService,
-      eventBusService: EventBusService<SchedulingEvents>,
-      schedulingModuleAdapter: ISchedulingModuleAdapter,
-      authService: IAuthUserService
+      private readonly loggerService: ILoggerService,
+      private readonly eventBusService: EventBusService<SchedulingEvents>,
+      private readonly schedulingModuleAdapter: ISchedulingModuleAdapter,
+      private readonly authService: IAuthUserService
   ) {
     super('scheduling');
 
-    this.loggerService = loggerService;
-    this.eventBusService = eventBusService;
     this.taskScheduleService = new TaskScheduleService(
         loggerService,
         schedulingModuleAdapter.taskScheduleDaoService
@@ -48,7 +43,6 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
         this.schedulerMetaService
     );
 
-    this.authService = authService;
     this.schedulerService = new SchedulerService(
         this.taskScheduleService,
         this.notificationService,

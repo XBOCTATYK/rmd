@@ -6,10 +6,7 @@ import {SchedulerMetaDaoService} from './dao/SchedulerMetaDaoService';
 import {TaskScheduleDaoService} from './dao/TaskSchedulingDao';
 
 export class SchedulingModuleAdapter implements ISchedulingModuleAdapter {
-  private dataProvider: IDataProvider;
-  constructor(dataProvider: IDataProvider) {
-    this.dataProvider = dataProvider;
-
+  constructor(private readonly dataProvider: IDataProvider) {
     const dataSource = this.dataProvider.getDataSource();
     this.notificationDaoService = new NotificationsDaoService(dataSource);
     this.taskScheduleDaoService = new TaskScheduleDaoService(dataSource);
