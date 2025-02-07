@@ -1,5 +1,5 @@
-import {UserSettingsDao} from '../../adapters/userSettingsModuleAdapter/dao/userSettingsDao';
+import {IUserSettingsDaoService} from '../../modules';
 
 export interface IUserSettingsAdapter {
-  userSettingsDaoService: UserSettingsDao
+  userSettingsDaoService: IUserSettingsDaoService
 }

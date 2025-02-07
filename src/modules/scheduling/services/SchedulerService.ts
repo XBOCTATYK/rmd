@@ -32,28 +32,26 @@ export class SchedulerService {
     const task = await this.taskScheduleService.findTask(notification.taskId);
 
     if (task) {
-      if (task.dueDate < new Date() || task.status === ETaskStatus.DONE) {
+      if (task.dueDate < new Date() || task.status === ETaskStatus.DONE || task.notificationsCount === 0) {
         return;
       }
 
       const nextNotificationCount = task.notificationsCount - 1;
-      let nextNotificationTime;
 
-      if (nextNotificationCount === -1) {
-        await this.taskScheduleService.updateTaskStatus(task.id!, ETaskStatus.DONE);
-      } else {
-        nextNotificationTime = getNextNotifyTime(
-            {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:59', TIME_FORMAT)},
-            {dueDate: task.dueDate, notificationsNeed: task.notificationsCount}
+      const nextNotificationTime = ExtendedDate.of(
+          getNextNotifyTime(
+              {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:59', TIME_FORMAT)},
+              {dueDate: task.dueDate, notificationsNeed: task.notificationsCount}
+          )
+      ).roundToMinutes();
+
+      if (nextNotificationTime) {
+        await this.notificationService.saveNotification(
+            new NotificationDto(undefined, nextNotificationTime.get(), 0, notification.taskId)
         );
-
-        if (nextNotificationTime) {
-          await this.notificationService.saveNotification(
-              new NotificationDto(undefined, nextNotificationTime, 0, notification.taskId)
-          );
-          await this.taskScheduleService.updateNotificationCount(task.id!, nextNotificationCount);
-        }
+        await this.taskScheduleService.updateNotificationCount(task.id!, nextNotificationCount);
       }
+
 
       await this.eventBusService.fireEvent({
         type: ESchedulingEventsType.SEND_NOTIFICATION,
@@ -61,7 +59,7 @@ export class SchedulerService {
           notificationId: notification.id!,
           dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
           description: task.description,
-          nextNotificationDate: nextNotificationTime && ExtendedDate.of(nextNotificationTime).format(FULL_FORMAT),
+          nextNotificationDate: nextNotificationTime && nextNotificationTime.format(FULL_FORMAT),
         },
         metadata: {
           publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,

@@ -1,7 +1,8 @@
 import {DataSource, Repository} from 'typeorm';
+import {IUserSettingsDaoService} from '../../..';
 import {UserSettingEntity} from '../model/db/userSetting.entity';
 
-export class UserSettingsDao {
+export class UserSettingsDao implements IUserSettingsDaoService {
   private dataSource: DataSource;
   private userSettingRepository: Repository<UserSettingEntity>;
 
@@ -14,7 +15,7 @@ export class UserSettingsDao {
     return this.userSettingRepository.findOneBy({publicUserId});
   }
 
-  public async updateUserSettings(publicUserId: number, type: string, value: string ) {
-    await this.userSettingRepository.update({publicUserId, type}, {value});
+  public async updateUserSettings(publicUserId: number, update: Record<string, string>) {
+    await this.userSettingRepository.update({publicUserId}, update);
   }
 }

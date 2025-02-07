@@ -1,13 +1,8 @@
 export class UserSetting {
-  id: number;
-  publicUserId: number;
-  type: string;
-  value: string;
-
-  constructor(id: number, publicUserId: number, type: string, value: string) {
-    this.id = id;
-    this.publicUserId = publicUserId;
-    this.type = type;
-    this.value = value;
-  }
+  constructor(
+    public id: number,
+    public publicUserId: number,
+    public type: string,
+    public value: string
+  ) {}
 }
