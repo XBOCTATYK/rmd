@@ -10,7 +10,7 @@ export function notificationAnswerListener(
     if (event.type === ESchedulingEventsType.NOTIFICATION_ANSWER_PROCESSING_ERROR) {
       await telegramApiService?.getProvider().telegram.sendMessage(
           (await telegramUserService.getUserByPublicId(event.metadata.publicUserId)).telegramId,
-          `Oh, wait! ${event.data.error}`
+          `${event.data.error}`
       );
     }
   };

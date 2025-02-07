@@ -50,7 +50,7 @@ export class TaskListeners {
                 user.userId,
                 0,
                 priority,
-                2,
+                priority,
                 dueDate
             )
         );
@@ -116,15 +116,20 @@ export class TaskListeners {
       if (event.type === ESchedulingEventsType.NOTIFICATION_ANSWER) {
         const {notificationId, answer} = event.data;
         const {publicUserId} = event.metadata ?? {};
-        await this.notificationService.updateNotificationAnswer(notificationId, answer);
 
         const notification = await this.notificationService.findNotification(notificationId);
 
-        if (!notification || notification.answer > 0) {
-          this.sendError({publicUserId, error: 'Notification was not found!'});
-
+        if (!notification) {
+          this.sendError({publicUserId, error: 'Oh, wait! Notification was not found!'});
           return;
         }
+
+        if (notification.answer > 0) {
+          this.sendError({publicUserId, error: 'But this notification was already answered!'});
+          return;
+        }
+
+        await this.notificationService.updateNotificationAnswer(notificationId, answer);
 
         const task = await this.taskScheduleService.findTask(notification.taskId);
 
@@ -137,7 +142,7 @@ export class TaskListeners {
             await this.taskScheduleService.updateTaskStatus(notification.taskId, ETaskStatus.DONE);
           }
         } else {
-          this.sendError({publicUserId, error: 'This task is already done!'});
+          this.sendError({publicUserId, error: 'But this task is already done!'});
         }
       }
     });

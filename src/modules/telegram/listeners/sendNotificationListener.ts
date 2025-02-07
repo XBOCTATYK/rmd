@@ -1,3 +1,4 @@
+import {FAKE_ID} from '../../common/const/notifications';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {INotificationControl} from '../services/controls/control.types';
 import {ITelegramApiService} from '../services/service.types';
@@ -14,7 +15,7 @@ export function sendNotificationListener(
       telegramApiService?.getProvider().telegram.sendMessage(
           (await telegramUserService.getUserByPublicId(event.metadata.publicUserId)).telegramId,
           `Your task: ${description} \nDue date: ${dueDate} \nNext notification: ${nextNotificationDate}`,
-          notificationControl?.getControls(notificationId)
+        notificationId > FAKE_ID ? notificationControl?.getControls(notificationId) : undefined
       );
     }
   };

@@ -2,6 +2,7 @@ import {getNextNotifyTime} from '../../../lib/calculateTime';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
 import {FULL_FORMAT, TIME_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
+import {FAKE_ID} from '../../common/const/notifications';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto} from '../model';
@@ -31,7 +32,6 @@ export class SchedulerService {
     setInterval(async () => {
       const notifications = await this.notificationService.findWaitingNotifications();
 
-      console.log(notifications);
       await Promise.all(notifications.map(this.processNotification.bind(this)));
     }, MINUTE);
 
@@ -49,17 +49,20 @@ export class SchedulerService {
       const nextNotificationCount = task.notificationsCount - 1;
       let nextNotificationTime;
 
-      if (nextNotificationCount === 0) {
+      if (nextNotificationCount === -1) {
         await this.taskScheduleService.updateTaskStatus(task.id!, ETaskStatus.DONE);
       } else {
         nextNotificationTime = getNextNotifyTime(
             {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:59', TIME_FORMAT)},
-            {dueDate: task.dueDate, notificationsNeed: nextNotificationCount}
+            {dueDate: task.dueDate, notificationsNeed: task.notificationsCount}
         );
-        await this.notificationService.saveNotification(
-            new NotificationDto(undefined, nextNotificationTime, 0, notification.taskId)
-        );
-        await this.taskScheduleService.updateNotificationCount(task.id!, nextNotificationCount);
+
+        if (nextNotificationTime) {
+          await this.notificationService.saveNotification(
+              new NotificationDto(undefined, nextNotificationTime, 0, notification.taskId)
+          );
+          await this.taskScheduleService.updateNotificationCount(task.id!, nextNotificationCount);
+        }
       }
 
       await this.eventBusService.fireEvent({
@@ -85,7 +88,7 @@ export class SchedulerService {
           await this.eventBusService.fireEvent({
             type: ESchedulingEventsType.SEND_NOTIFICATION,
             data: {
-              notificationId: -1,
+              notificationId: FAKE_ID,
               dueDate: ExtendedDate.of(task.dueDate).format(FULL_FORMAT),
               description: task.description,
             },
