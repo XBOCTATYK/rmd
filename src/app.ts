@@ -3,6 +3,9 @@ import {AuthModuleAdapter} from './adapters/authModuleAdapter/authModule.adapter
 import {AuthModuleAdapterMigrations} from './adapters/authModuleAdapter/authModuleAdapter.migrations';
 import {SchedulingModuleAdapter} from './adapters/schedulingModuleAdapter/schedulingModule.adapter';
 import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
+import {UserSettingsCacheDao} from './adapters/userSettingsModuleAdapter/dao/userSettingsCacheDao';
+import {UserSettingsAdapterMigrations} from './adapters/userSettingsModuleAdapter/userSettingsAdapter.migrations';
+import {UserSettingsModuleAdapter} from './adapters/userSettingsModuleAdapter/userSettingsModule.adapter';
 import {ISchedulingModuleConfig} from './modules';
 import {AuthModule} from './modules/auth/auth.module';
 import {CommonModule} from './modules/common/common.module';
@@ -10,17 +13,20 @@ import {IDataSourceConfiguration} from './modules/common/common.types';
 import {NodeEmitterEventBusAdapter} from './modules/common/connectors/NodeEmitterEventBusAdapter';
 import {SchedulingEvents} from './modules/common/databus/schedulingMessaging.types';
 import {PinoLoggerService} from './modules/common/service/LoggerService';
+import {RedisDataSource} from './modules/common/service/sources/RedisDataSource';
 import {ConfigurationModule} from './modules/configuration/configuration.module';
 import {DataBusModule} from './modules/databus/databus.module';
 import {SchedulingModule} from './modules/scheduling/scheduling.module';
 import {SchedulingModuleMigrations} from './modules/scheduling/schedulingModuleMigrations';
 import {TelegramModule} from './modules/telegram/telegram.module';
 import {ITelegramModuleConfig} from './modules/telegram/telegram.types';
+import {UserSettingsModule} from './modules/user-settings/user-settings.module';
 
 const moduleMigrationsList = [
   new SchedulingModuleAdapterMigrations(),
   new AuthModuleAdapterMigrations(),
   new SchedulingModuleMigrations(),
+  new UserSettingsAdapterMigrations(),
 ];
 
 (async function() {
@@ -42,6 +48,17 @@ const moduleMigrationsList = [
   const authModule = new AuthModule(dataProvider, loggerService, new AuthModuleAdapter(dataProvider));
   await authModule.init(configService.get('auth'));
   const {userAuthService} = authModule.exports();
+
+  const userSettingsModule = new UserSettingsModule(
+      new UserSettingsModuleAdapter(dataProvider),
+      loggerService
+  );
+
+  await userSettingsModule.init({
+    userSettingsCacheAdapter: {
+      userCacheDao: new UserSettingsCacheDao(new RedisDataSource()),
+    },
+  });
 
   const schedulingModule = new SchedulingModule(
       loggerService,

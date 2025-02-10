@@ -8,12 +8,12 @@ export class UserSettingsDataService {
     private readonly loggerService: ILoggerService
   ) {}
 
-  async findUserSettingsByPublicUserId(publicUserId: number): Promise<UserSetting[]> {
+  async findUserSettingsByPublicUserId(publicUserId: string): Promise<UserSetting | null> {
     this.loggerService.debug(`findUserSettingsByPublicUserId(${publicUserId})`);
     return this.userSettingsDao.findUserSettingsByPublicUserId(publicUserId);
   }
 
-  async updateUserSettings(publicUserId: number, update: Record<string, string>) {
+  async updateUserSettings(publicUserId: string, update: Record<string, string>) {
     this.loggerService.debug(`updateUserSettings(${publicUserId}, ${update})`);
     return this.userSettingsDao.updateUserSettings(publicUserId, update);
   }

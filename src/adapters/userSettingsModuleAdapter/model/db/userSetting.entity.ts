@@ -5,7 +5,7 @@ import {SettingTypeEntity} from './settingType.entity';
 export class UserSettingEntity {
   constructor(
       id: number,
-      userId: number,
+      userId: string,
       type: string,
       value: string
   ) {
@@ -23,7 +23,7 @@ export class UserSettingEntity {
 
   @Index('user_setting_user_id_idx_k', {unique: true})
   @Column({name: 'public_user_id', type: 'varchar'})
-    publicUserId: number;
+    publicUserId: string;
 
   @Column({name: 'setting_type', type: 'varchar'})
   @ManyToOne(() => SettingTypeEntity, (settingType) => settingType.id)
