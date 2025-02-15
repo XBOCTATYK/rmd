@@ -1,12 +1,13 @@
 import {getNextNotifyTime} from '../../../lib/calculateTime';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
-import {FULL_FORMAT, TIME_FORMAT} from '../../../lib/formats/formats';
+import {FULL_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {FAKE_ID} from '../../common/const/notifications';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto} from '../model';
 import {ETaskStatus} from '../model/const/ETaskStatus';
+import {IUserSleepTimeService} from './services.types';
 
 const MINUTE = 60000;
 
@@ -15,7 +16,8 @@ export class SchedulerService {
       private readonly taskScheduleService: ITaskScheduleService,
       private readonly notificationService: INotificationsService,
       private readonly eventBusService: EventBusService<SchedulingEvents>,
-      private readonly authService: IAuthUserService
+      private readonly authService: IAuthUserService,
+      private readonly userSleepTimeService: IUserSleepTimeService
   ) {}
 
   public start() {
@@ -38,9 +40,12 @@ export class SchedulerService {
 
       const nextNotificationCount = task.notificationsCount - 1;
 
+      const user = await this.authService.findUserByUserId(task.userId!);
+      const {startTime, endTime} = await this.userSleepTimeService.getUserSleepTime(user.publicUserId);
+
       const nextNotificationTime = ExtendedDate.of(
           getNextNotifyTime(
-              {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:59', TIME_FORMAT)},
+              {startTime, endTime},
               {dueDate: task.dueDate, notificationsNeed: task.notificationsCount}
           )
       ).roundToMinutes();
@@ -62,7 +67,7 @@ export class SchedulerService {
           nextNotificationDate: nextNotificationTime && nextNotificationTime.format(FULL_FORMAT),
         },
         metadata: {
-          publicUserId: (await this.authService.findUserByUserId(task.userId!)).publicUserId,
+          publicUserId: user.publicUserId,
         },
       });
     }

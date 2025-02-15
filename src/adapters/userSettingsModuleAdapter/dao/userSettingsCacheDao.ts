@@ -1,11 +1,11 @@
 import {RedisClientType} from 'redis';
 import {IUserCacheDaoService} from '../../..';
-import {RedisDataSource} from '../../../modules/common/service/sources/RedisDataSource';
+import {IDataProvider} from '../../../modules/common/common.types';
 
 export class UserSettingsCacheDao implements IUserCacheDaoService {
   private cacheClient: RedisClientType | null = null;
 
-  constructor(private readonly cacheDataSource: RedisDataSource) {}
+  constructor(private readonly cacheDataSource: IDataProvider<RedisClientType>) {}
 
   async findUserSettingsByPublicUserId(publicUserId: string): Promise<Record<string, string>> {
     await this.initClient();

@@ -1,3 +1,4 @@
+import {IUserSettingsDataService} from '..';
 import {wait} from '../../lib/wait';
 import {ISchedulingModuleAdapter} from '../../types/adapters/ISchedulingModuleAdapter';
 import {IAuthUserService, ISchedulerMetaService} from '../common/common.types';
@@ -11,6 +12,7 @@ import {ISchedulingModuleConfig} from './scheduling.types';
 import {NotificationService} from './services/NotificationService';
 import {SchedulerMetaService} from './services/SchedulerMetaService';
 import {SchedulerService} from './services/SchedulerService';
+import {SleepTimeService} from './services/SleepTimeService';
 import {TaskScheduleService} from './services/TaskScheduleService';
 
 export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig, ISchedulingModuleExport> {
@@ -18,12 +20,14 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
   private readonly notificationService: NotificationService;
   private readonly schedulerService: SchedulerService;
   private readonly schedulerMetaService: ISchedulerMetaService;
+  private readonly sleepTimeService: SleepTimeService;
 
   constructor(
       private readonly loggerService: ILoggerService,
       private readonly eventBusService: EventBusService<SchedulingEvents>,
       private readonly schedulingModuleAdapter: ISchedulingModuleAdapter,
-      private readonly authService: IAuthUserService
+      private readonly authService: IAuthUserService,
+      private readonly userSettingsDataService: IUserSettingsDataService
   ) {
     super('scheduling');
 
@@ -43,18 +47,27 @@ export class SchedulingModule extends AbstractAuthModule<ISchedulingModuleConfig
         this.schedulerMetaService
     );
 
+    this.sleepTimeService = new SleepTimeService(this.userSettingsDataService);
+
     this.schedulerService = new SchedulerService(
         this.taskScheduleService,
         this.notificationService,
         this.eventBusService,
-        this.authService
+        this.authService,
+        this.sleepTimeService
     );
   }
 
   public async initModule(config: ISchedulingModuleConfig) {
     this.loggerService.info('SchedulingModule initialized');
 
-    new TaskListeners(this.eventBusService, this.taskScheduleService!, this.notificationService, this.authService);
+    new TaskListeners(
+        this.eventBusService,
+      this.taskScheduleService!,
+      this.notificationService,
+      this.authService,
+      this.sleepTimeService
+    );
     await this.schedulerService.start();
 
     await this.helloCheck();

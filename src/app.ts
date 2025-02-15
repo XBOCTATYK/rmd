@@ -3,7 +3,6 @@ import {AuthModuleAdapter} from './adapters/authModuleAdapter/authModule.adapter
 import {AuthModuleAdapterMigrations} from './adapters/authModuleAdapter/authModuleAdapter.migrations';
 import {SchedulingModuleAdapter} from './adapters/schedulingModuleAdapter/schedulingModule.adapter';
 import {SchedulingModuleAdapterMigrations} from './adapters/schedulingModuleAdapter/schedulingModuleAdapter.migrations';
-import {UserSettingsCacheDao} from './adapters/userSettingsModuleAdapter/dao/userSettingsCacheDao';
 import {UserSettingsAdapterMigrations} from './adapters/userSettingsModuleAdapter/userSettingsAdapter.migrations';
 import {UserSettingsModuleAdapter} from './adapters/userSettingsModuleAdapter/userSettingsModule.adapter';
 import {ISchedulingModuleConfig} from './modules';
@@ -39,6 +38,7 @@ const moduleMigrationsList = [
 
   const commonModule = new CommonModule(loggerService, moduleMigrationsList);
   const {dataProvider} = (await commonModule.init({db: dbConfig})).exports();
+  const cacheProvider = new RedisDataSource();
 
   const dataBusModule = new DataBusModule(dataProvider, loggerService, new NodeEmitterEventBusAdapter());
   await dataBusModule.init({});
@@ -50,21 +50,19 @@ const moduleMigrationsList = [
   const {userAuthService} = authModule.exports();
 
   const userSettingsModule = new UserSettingsModule(
-      new UserSettingsModuleAdapter(dataProvider),
+      new UserSettingsModuleAdapter({dataProvider, cacheProvider}),
       loggerService
   );
 
-  await userSettingsModule.init({
-    userSettingsCacheAdapter: {
-      userCacheDao: new UserSettingsCacheDao(new RedisDataSource()),
-    },
-  });
+  await userSettingsModule.init();
+  const {userSettingsDataService} = userSettingsModule.exports();
 
   const schedulingModule = new SchedulingModule(
       loggerService,
       taskTopic,
       new SchedulingModuleAdapter(dataProvider),
-      userAuthService
+      userAuthService,
+      userSettingsDataService
   );
   schedulingModule.init(configService.get<ISchedulingModuleConfig>('scheduling'));
 

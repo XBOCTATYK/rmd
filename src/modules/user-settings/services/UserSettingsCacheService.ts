@@ -13,13 +13,6 @@ export class UserSettingsCacheService {
   }
 
   public async fillCache(): Promise<void> {
-    this.loggerService.info('Getting user settings for cache');
-    const userSetting = await this.userSettingsDao.findUserSettingsByPublicUserId('7167082f7f886e5cb470d0793d011689');
-
-    if (!userSetting) {
-      return;
-    }
-
-    await this.userCacheDao.addUserSettings(userSetting.publicUserId, {[userSetting.type]: userSetting.value});
+    return;
   }
 }

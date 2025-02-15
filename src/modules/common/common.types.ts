@@ -2,15 +2,11 @@ import {DataSource} from 'typeorm';
 import {User} from '../auth';
 import {NotificationDto, TaskDto} from '../scheduling';
 
-export interface IDataSource {
-    openSession(): void
-    closeSession(): void
-}
 
-export interface IDataProvider {
-    getUninitializedDataSource(): DataSource
-    getDataSource(): DataSource
-    connect(): Promise<DataSource>
+export interface IDataProvider<TSource> {
+    getUninitializedDataSource(): TSource
+    getDataSource(): TSource
+    connect(): Promise<TSource>
     disconnect(): Promise<void>
 }
 
@@ -29,7 +25,7 @@ export interface IDataSourceConfiguration {
 }
 
 export interface ICommonModuleExports {
-    dataProvider: IDataProvider
+    dataProvider: IDataProvider<DataSource>
 }
 
 export interface IAuthUserService {

@@ -5,12 +5,12 @@ export interface IUserSettingsModuleExports {
 }
 
 export interface IUserSettingsDaoService {
-  findUserSettingsByPublicUserId(publicUserId: string): Promise<UserSetting | null>
+  findUserSettingsByPublicUserId(publicUserId: string): Promise<UserSetting[]>
   updateUserSettings(publicUserId: string, update: Record<string, string>): Promise<void>
 }
 
 export interface IUserSettingsDataService {
-  findUserSettingsByPublicUserId(publicUserId: string): Promise<UserSetting[]>
+  findUserSettingsByPublicUserId(publicUserId: string): Promise<Record<string, string>>
   updateUserSettings(publicUserId: string, update: Record<string, string>): Promise<void>
 }
 
@@ -24,6 +24,4 @@ export interface IUserSettingsCacheAdapter {
   userCacheDao: IUserCacheDaoService
 }
 
-export interface IUserSettingsModuleConfig {
-  userSettingsCacheAdapter: IUserSettingsCacheAdapter
-}
+export type IUserSettingsModuleConfig = {}

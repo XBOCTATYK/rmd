@@ -12,9 +12,10 @@ export class UserSettingsDao implements IUserSettingsDaoService {
     this.userSettingRepository = this.dataSource.getRepository(UserSettingEntity);
   }
 
-  public async findUserSettingsByPublicUserId(publicUserId: string): Promise<UserSetting | null> {
-    const entity = await this.userSettingRepository.findOneBy({publicUserId});
-    return entity ? UserSettingMapper.toDto(entity) : null;
+  public async findUserSettingsByPublicUserId(publicUserId: string): Promise<UserSetting[]> {
+    console.log('publicUserId', publicUserId);
+    const entitiesList = await this.userSettingRepository.findBy({publicUserId});
+    return entitiesList.map(UserSettingMapper.toDto);
   }
 
   public async updateUserSettings(publicUserId: string, update: Record<string, string>) {

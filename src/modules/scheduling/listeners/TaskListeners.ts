@@ -1,19 +1,21 @@
 import {getNextNotifyTime} from '../../../lib/calculateTime';
 import {ExtendedDate} from '../../../lib/date-services/extended-date';
-import {FULL_FORMAT, TIME_FORMAT} from '../../../lib/formats/formats';
+import {FULL_FORMAT} from '../../../lib/formats/formats';
 import {IAuthUserService, INotificationsService, ITaskScheduleService} from '../../common/common.types';
 import {ESchedulingEventsType, SchedulingEvents} from '../../common/databus/schedulingMessaging.types';
 import {ENotificationAnswerType} from '../../common/types/ENotificationAnswerType';
 import {EventBusService} from '../../databus/services/eventBusService';
 import {NotificationDto, TaskDto} from '../model';
 import {ETaskStatus} from '../model/const/ETaskStatus';
+import {IUserSleepTimeService} from '../services/services.types';
 
 export class TaskListeners {
   constructor(
       private readonly eventBusService: EventBusService<SchedulingEvents>,
       private readonly taskScheduleService: ITaskScheduleService,
       private readonly notificationService: INotificationsService,
-      private readonly userService: IAuthUserService
+      private readonly userService: IAuthUserService,
+      private readonly sleepTimeService: IUserSleepTimeService
   ) {
     Promise.all([
       this.runNewTaskListener(),
@@ -46,9 +48,11 @@ export class TaskListeners {
             )
         );
 
+        const {startTime, endTime} = await this.sleepTimeService.getUserSleepTime(publicUserId);
+
         const nextNotificationTime = ExtendedDate.of(
             getNextNotifyTime(
-                {startTime: ExtendedDate.parse('09:00', TIME_FORMAT), endTime: ExtendedDate.parse('23:59', TIME_FORMAT)},
+                {startTime, endTime},
                 {dueDate: dueDate, notificationsNeed: priority}
             )
         );

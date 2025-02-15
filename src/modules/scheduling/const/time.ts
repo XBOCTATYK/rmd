@@ -1,0 +1,1 @@
+export const DEFAULT_TIME_USER_SETTING = '08:00,23:59';
